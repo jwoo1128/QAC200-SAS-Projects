@@ -1,11 +1,18 @@
 /* ----------------------------------------
 Code exported from SAS Enterprise Guide
-DATE: Monday, January 12, 2015     TIME: 9:02:48 PM
-PROJECT: WooJ_SAS_project_011215
-PROJECT PATH: P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp
+DATE: Tuesday, January 13, 2015     TIME: 4:45:35 PM
+PROJECT: WooJ_SAS_project_011315
+PROJECT PATH: P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011315.egp
 ---------------------------------------- */
 
-/* Unable to determine code to assign library JWOODATA on Local */
+/* Library assignment for Local.JWOODATA */
+Libname JWOODATA BASE 'P:\QAC\qac200\students\jwoo' ;
+/* Library assignment for Local.JWOODATA */
+Libname JWOODATA BASE 'P:\QAC\qac200\students\jwoo' ;
+/* Library assignment for Local.MYDATA */
+Libname MYDATA BASE 'P:\QAC\qac200\students\jwoo' ;
+/* Library assignment for Local.MYDATA */
+Libname MYDATA BASE 'P:\QAC\qac200\students\jwoo' ;
 
 
 /* Conditionally delete set of tables or views, if they exists          */
@@ -209,6 +216,32 @@ PROJECT PATH: P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp
   %end;
 %mend;
 
+/* save the current settings of XPIXELS and YPIXELS */
+/* so that they can be restored later               */
+%macro _sas_pushchartsize(new_xsize, new_ysize);
+	%global _savedxpixels _savedypixels;
+	options nonotes;
+	proc sql noprint;
+	select setting into :_savedxpixels
+	from sashelp.vgopt
+	where optname eq "XPIXELS";
+	select setting into :_savedypixels
+	from sashelp.vgopt
+	where optname eq "YPIXELS";
+	quit;
+	options notes;
+	GOPTIONS XPIXELS=&new_xsize YPIXELS=&new_ysize;
+%mend;
+
+/* restore the previous values for XPIXELS and YPIXELS */
+%macro _sas_popchartsize;
+	%if %symexist(_savedxpixels) %then %do;
+		GOPTIONS XPIXELS=&_savedxpixels YPIXELS=&_savedypixels;
+		%symdel _savedxpixels / nowarn;
+		%symdel _savedypixels / nowarn;
+	%end;
+%mend;
+
 /* ---------------------------------- */
 /* MACRO: enterpriseguide             */
 /* PURPOSE: define a macro variable   */
@@ -265,32 +298,6 @@ PROJECT PATH: P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp
 
 %enterpriseguide
 
-/* save the current settings of XPIXELS and YPIXELS */
-/* so that they can be restored later               */
-%macro _sas_pushchartsize(new_xsize, new_ysize);
-	%global _savedxpixels _savedypixels;
-	options nonotes;
-	proc sql noprint;
-	select setting into :_savedxpixels
-	from sashelp.vgopt
-	where optname eq "XPIXELS";
-	select setting into :_savedypixels
-	from sashelp.vgopt
-	where optname eq "YPIXELS";
-	quit;
-	options notes;
-	GOPTIONS XPIXELS=&new_xsize YPIXELS=&new_ysize;
-%mend;
-
-/* restore the previous values for XPIXELS and YPIXELS */
-%macro _sas_popchartsize;
-	%if %symexist(_savedxpixels) %then %do;
-		GOPTIONS XPIXELS=&_savedxpixels YPIXELS=&_savedypixels;
-		%symdel _savedxpixels / nowarn;
-		%symdel _savedypixels / nowarn;
-	%end;
-%mend;
-
 ODS PROCTITLE;
 OPTIONS DEV=ACTIVEX;
 GOPTIONS XPIXELS=0 YPIXELS=0;
@@ -314,8 +321,8 @@ ODS tagsets.sasreport13(ID=EGSRX) FILE=EGSRX
 
 /*   START OF NODE: Assign Project Library (JWOODATA)   */
 %LET _CLIENTTASKLABEL='Assign Project Library (JWOODATA)';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
+%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011315.egp';
+%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011315.egp';
 
 GOPTIONS ACCESSIBLE;
 LIBNAME JWOODATA BASE "P:\QAC\qac200\students\jwoo" ;
@@ -328,8 +335,8 @@ GOPTIONS NOACCESSIBLE;
 
 /*   START OF NODE: Data and Observ.   */
 %LET _CLIENTTASKLABEL='Data and Observ.';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
+%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011315.egp';
+%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011315.egp';
 
 GOPTIONS ACCESSIBLE;
 %_eg_conditional_dropds(JWOODATA.MEPS_FULLYR_2012_SUBSET);
@@ -490,7 +497,7 @@ PROC SQL;
           t1.CERVAGED, 
           t1.CERVREMS, 
           t1.EDRECODE
-      FROM EC100002.meps_fullyr_2012 t1
+      FROM EC100005.meps_fullyr_2012 t1
       WHERE t1.AGE12X >= 18
       ORDER BY t1.DUPERSID;
 QUIT;
@@ -502,9 +509,10 @@ GOPTIONS NOACCESSIBLE;
 
 
 /*   START OF NODE: SAS Program Code new   */
+%LET SYSLAST=JWOODATA.MEPS_FULLYR_2012_SUBSET;
 %LET _CLIENTTASKLABEL='SAS Program Code new';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
+%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011315.egp';
+%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011315.egp';
 %LET _SASPROGRAMFILE='P:\QAC\qac200\students\jwoo\SAS Program Code new.sas';
 
 GOPTIONS ACCESSIBLE;
@@ -541,8 +549,8 @@ GOPTIONS NOACCESSIBLE;
 
 /*   START OF NODE: Recode Variables   */
 %LET _CLIENTTASKLABEL='Recode Variables';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
+%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011315.egp';
+%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011315.egp';
 
 GOPTIONS ACCESSIBLE;
 %_eg_conditional_dropds(WORK.MEPS_FULLYR_2012_SUBSET_MANAGED);
@@ -556,6 +564,7 @@ PROC SQL;
           t1.RACETHX, 
           t1.MARRY12X, 
           t1.EDUYRDEG, 
+          t1.EDRECODE, 
           t1.UNEMP12X, 
           t1.UNEIMP12, 
           t1.ADAPPT42, 
@@ -877,6 +886,8 @@ PROC SQL;
 QUIT;
 
 GOPTIONS NOACCESSIBLE;
+
+
 %LET _CLIENTTASKLABEL=;
 %LET _CLIENTPROJECTPATH=;
 %LET _CLIENTPROJECTNAME=;
@@ -884,12 +895,203 @@ GOPTIONS NOACCESSIBLE;
 
 /*   START OF NODE: Reverse Code Variables   */
 %LET _CLIENTTASKLABEL='Reverse Code Variables';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
+%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011315.egp';
+%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011315.egp';
 
 GOPTIONS ACCESSIBLE;
-%put ERROR: Unable to get SAS code. Unable to open input data;
+%_eg_conditional_dropds(WORK.MEPS_FULLYR_2012_REVERSE);
 
+PROC SQL;
+   CREATE TABLE WORK."MEPS_FULLYR_2012_REVERSE"n(label="QUERY_FOR_MEPS_FULLYR_2012_RE") AS 
+   SELECT t1.DUPERSID, 
+          t1.AGE12X, 
+          t1.SEX, 
+          t1.REGION12, 
+          t1.RACETHX, 
+          t1.MARRY12X, 
+          t1.EDUYRDEG, 
+          t1.EDRECODE, 
+          t1.UNEMP12X, 
+          t1.UNEIMP12, 
+          t1.ADAPPT42, 
+          t1.ADCAPE42, 
+          t1.ADCLIM42, 
+          t1.ADCMPD42, 
+          t1.ADCMPM42, 
+          t1.ADCMPY42, 
+          t1.ADDAYA42, 
+          t1.ADDOWN42, 
+          t1.ADDPRS42, 
+          t1.ADDRBP42, 
+          t1.ADEFRT42, 
+          t1.ADEGMC42, 
+          t1.ADEXPL42, 
+          t1.ADEZUN42, 
+          t1.ADFFRM42, 
+          t1.ADFHLP42, 
+          t1.ADGENH42, 
+          t1.ADHECR42, 
+          t1.ADHOPE42, 
+          t1.ADILCR42, 
+          t1.ADILWW42, 
+          t1.ADINSA42, 
+          t1.ADINSB42, 
+          t1.ADINST42, 
+          t1.ADINTR42, 
+          t1.ADL3MO42, 
+          t1.ADLANG42, 
+          t1.ADLHLP42, 
+          t1.ADLIST42, 
+          t1.ADMALS42, 
+          t1.ADMWLM42, 
+          t1.ADNDCR42, 
+          t1.ADNERV42, 
+          t1.ADNRGY42, 
+          t1.ADNSMK42, 
+          t1.ADOVER42, 
+          t1.ADPAIN42, 
+          t1.ADPALS42, 
+          t1.ADPRTM42, 
+          t1.ADPRX42, 
+          t1.ADPWLM42, 
+          t1.ADRESP42, 
+          t1.ADREST42, 
+          t1.ADRISK42, 
+          t1.ADRTCR42, 
+          t1.ADRTWW42, 
+          t1.ADSAD42, 
+          t1.ADSMOK42, 
+          t1.ADSOCA42, 
+          t1.ADSPEC42, 
+          t1.ADSPRF42, 
+          t1.ADTLHW42, 
+          t1.ADUPRO42, 
+          t1.ADWRTH42, 
+          t1.PHQ242, 
+          t1.HPRAP12, 
+          t1.HPRAU12, 
+          t1.HPRDE12, 
+          t1.HPRFE12, 
+          t1.HPRJA12, 
+          t1.HPRJL12, 
+          t1.HPRJU12, 
+          t1.HPRMA12, 
+          t1.HPRMY12, 
+          t1.HPRNO12, 
+          t1.HPROC12, 
+          t1.HPRSE12, 
+          t1.MDDLPR42, 
+          t1.MDDLRS42, 
+          t1.MDUNAB42, 
+          t1.MDUNPR42, 
+          t1.MDUNRS42, 
+          t1.MDDLAY42, 
+          t1.DNUNAB42, 
+          t1.DNUNPR42, 
+          t1.DNUNRS42, 
+          t1.DNDLAY42, 
+          t1.DNDLPR42, 
+          t1.DNDLRS42, 
+          t1.RTHLTH31, 
+          t1.RTHLTH42, 
+          t1.RTHLTH53, 
+          t1.ARTHAGED, 
+          t1.ARTHDX, 
+          t1.ARTHTYPE, 
+          t1.ASTHAGED, 
+          t1.ASTHDX, 
+          t1.ADHDADDX, 
+          t1.ADHDAGED, 
+          t1.DSDIA53, 
+          t1.MIAGED, 
+          t1.MIDX, 
+          t1.HIBPAGED, 
+          t1.HIBPDX, 
+          t1.LEUKAGED, 
+          t1.LEUKREMS, 
+          t1.LUNGAGED, 
+          t1.LUNGREMS, 
+          t1.LYMPAGED, 
+          t1.LYMPREMS, 
+          t1.MELAAGED, 
+          t1.MELAREMS, 
+          t1.OTHRAGED, 
+          t1.OHRTAGED, 
+          t1.OHRTDX, 
+          t1.SKDKAGED, 
+          t1.SKDKREMS, 
+          t1.SKNMAGED, 
+          t1.STRKAGED, 
+          t1.STRKDX, 
+          t1.THRTAGED, 
+          t1.THRTREMS, 
+          t1.THYRAGED, 
+          t1.THYRREMS, 
+          t1.AIDHLP31, 
+          t1.AIDHLP53, 
+          t1.SSECP12X, 
+          t1.BUSIMP12, 
+          t1.BUSNP12X, 
+          t1.BRAIAGED, 
+          t1.BRAIREMS, 
+          t1.BRSTAGED, 
+          t1.BRSTEX53, 
+          t1.BRSTREMS, 
+          t1.CABLADDR, 
+          t1.CABRAIN, 
+          t1.CABREAST, 
+          t1.CACERVIX, 
+          t1.CACOLON, 
+          t1.CALEUKEM, 
+          t1.CALUNG, 
+          t1.CALYMPH, 
+          t1.CAMELANO, 
+          t1.CANCERDX, 
+          t1.CAOTHER, 
+          t1.CAPROSTA, 
+          t1.CARECO42, 
+          t1.CASHP12X, 
+          t1.CASKINDK, 
+          t1.CASKINNM, 
+          t1.CATHROAT, 
+          t1.CATHYROD, 
+          t1.CERVAGED, 
+          t1.CERVREMS, 
+          t1.SAQ_GENH, 
+          t1.SAQ_HEALIMACT, 
+          t1.SAQ_HEALIMSTRS, 
+          t1.SAQ_ALPHYS, 
+          t1.SAQ_WORKLIM, 
+          t1.SAQ_ALMENT, 
+          t1.SAQ_WLMENT, 
+          t1.SAQ_FELTPEACE, 
+          t1.SAQ_PAINLIM, 
+          t1.SAQ_ENERGY, 
+          t1.SAQ_DOWNHEART, 
+          t1.SAQ_SOCACT, 
+          t1.Marital_Status, 
+          t1.Education_Level, 
+          t1.GOT_CARE, 
+          t1.NUMB_VISIT_MED, 
+          t1.EASY_MED_CARE, 
+          t1.HEALTH_CARE_RATING, 
+          t1.SMOKING, 
+          t1.HEALTH_STAT1, 
+          t1.HEALTH_STAT2, 
+          t1.HEALTH_STAT3, 
+          t1.FEEL_NERV, 
+          t1.FEEL_WORTHLESS, 
+          t1.FEEL_RESTLESS, 
+          /* SAQ_ENERGY_rev */
+            (6-t1.SAQ_ENERGY) LABEL="Had a lot of energy recoded reverse" AS SAQ_ENERGY_rev, 
+          /* SAQ_FELTPEACE_rev */
+            (6-t1.SAQ_FELTPEACE) LABEL="SAQ felt calm/peace recoded reverse" AS SAQ_FELTPEACE_rev, 
+          /* SAQ_GENH_rev */
+            (6-t1.SAQ_GENH) LABEL="SAQ General Health recoded rev" AS SAQ_GENH_rev, 
+          /* SAQ_PAINLIM_rev */
+            (6-t1.SAQ_PAINLIM) LABEL="SAQ Pain limits normal work recoded reverse" AS SAQ_PAINLIM_rev
+      FROM WORK.MEPS_FULLYR_2012_SUBSET_MANAGED t1;
+QUIT;
 
 GOPTIONS NOACCESSIBLE;
 
@@ -901,136 +1103,14 @@ GOPTIONS NOACCESSIBLE;
 
 /*   START OF NODE: SUM variable SF-12   */
 %LET _CLIENTTASKLABEL='SUM variable SF-12';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
+%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011315.egp';
+%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011315.egp';
 
 GOPTIONS ACCESSIBLE;
-%put ERROR: Unable to get SAS code. Unable to open input data;
-
-
-GOPTIONS NOACCESSIBLE;
-
-
-%LET _CLIENTTASKLABEL=;
-%LET _CLIENTPROJECTPATH=;
-%LET _CLIENTPROJECTNAME=;
-
-
-/*   START OF NODE: List Data   */
-%LET _CLIENTTASKLABEL='List Data';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
-
-GOPTIONS ACCESSIBLE;
-/* -------------------------------------------------------------------
-   Code generated by SAS Task
-
-   Generated on: Monday, January 12, 2015 at 8:30:57 PM
-   By task: List Data
-
-   Input Data: Local:WORK.MEPS_FULLYR_2012_REVER_SUM
-   Server:  Local
-   ------------------------------------------------------------------- */
-
-%_eg_conditional_dropds(WORK.SORTTempTableSorted);
-/* -------------------------------------------------------------------
-   Sort data set Local:WORK.MEPS_FULLYR_2012_REVER_SUM
-   ------------------------------------------------------------------- */
+%_eg_conditional_dropds(WORK.MEPS_FULLYR_2012_REVER_SUM);
 
 PROC SQL;
-	CREATE VIEW WORK.SORTTempTableSorted AS
-		SELECT T.SAQ_ENERGY_rev, T.SAQ_FELTPEACE_rev, T.SAQ_GENH_rev, T.SAQ_PAINLIM_rev, T.SAQ_HEALIMACT, T.SAQ_HEALIMSTRS, T.SAQ_ALPHYS, T.SAQ_WORKLIM, T.SAQ_ALMENT, T.SAQ_WLMENT, T.SAQ_DOWNHEART, T.SAQ_SOCACT
-	FROM WORK.MEPS_FULLYR_2012_REVER_SUM as T
-;
-QUIT;
-TITLE;
-TITLE1 "Check Aggregate Variable Codding";
-FOOTNOTE;
-FOOTNOTE1 "Generated by the SAS System (&_SASSERVERNAME, &SYSSCPL) on %TRIM(%QSYSFUNC(DATE(), NLDATE20.)) at %TRIM(%SYSFUNC(TIME(), TIMEAMPM12.))";
-
-PROC PRINT DATA=WORK.SORTTempTableSorted
-	(OBS=50)
-	OBS="Row number"
-	LABEL
-	;
-	VAR SAQ_ENERGY_rev SAQ_FELTPEACE_rev SAQ_GENH_rev SAQ_PAINLIM_rev SAQ_HEALIMACT SAQ_HEALIMSTRS SAQ_ALPHYS SAQ_WORKLIM SAQ_ALMENT SAQ_WLMENT SAQ_DOWNHEART SAQ_SOCACT;
-RUN;
-/* -------------------------------------------------------------------
-   End of task code.
-   ------------------------------------------------------------------- */
-RUN; QUIT;
-%_eg_conditional_dropds(WORK.SORTTempTableSorted);
-TITLE; FOOTNOTE;
-
-
-GOPTIONS NOACCESSIBLE;
-%LET _CLIENTTASKLABEL=;
-%LET _CLIENTPROJECTPATH=;
-%LET _CLIENTPROJECTNAME=;
-
-
-/*   START OF NODE: One-Way Frequencies   */
-%LET _CLIENTTASKLABEL='One-Way Frequencies';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
-
-GOPTIONS ACCESSIBLE;
-/* -------------------------------------------------------------------
-   Code generated by SAS Task
-
-   Generated on: Monday, January 12, 2015 at 8:30:58 PM
-   By task: One-Way Frequencies
-
-   Input Data: Local:WORK.MEPS_FULLYR_2012_REVER_SUM
-   Server:  Local
-   ------------------------------------------------------------------- */
-
-%_eg_conditional_dropds(WORK.SORT);
-/* -------------------------------------------------------------------
-   Sort data set Local:WORK.MEPS_FULLYR_2012_REVER_SUM
-   ------------------------------------------------------------------- */
-
-PROC SQL;
-	CREATE VIEW WORK.SORT AS
-		SELECT T.SUM_SAQ_SF12
-	FROM WORK.MEPS_FULLYR_2012_REVER_SUM as T
-;
-QUIT;
-
-TITLE;
-TITLE1 "One-Way Frequencies";
-TITLE2 "Results";
-FOOTNOTE;
-FOOTNOTE1 "Generated by the SAS System (&_SASSERVERNAME, &SYSSCPL) on %TRIM(%QSYSFUNC(DATE(), NLDATE20.)) at %TRIM(%SYSFUNC(TIME(), TIMEAMPM12.))";
-PROC FREQ DATA=WORK.SORT
-	ORDER=INTERNAL
-;
-	TABLES SUM_SAQ_SF12 /  SCORES=TABLE;
-RUN;
-/* -------------------------------------------------------------------
-   End of task code.
-   ------------------------------------------------------------------- */
-RUN; QUIT;
-%_eg_conditional_dropds(WORK.SORT);
-TITLE; FOOTNOTE;
-
-
-GOPTIONS NOACCESSIBLE;
-%LET _CLIENTTASKLABEL=;
-%LET _CLIENTPROJECTPATH=;
-%LET _CLIENTPROJECTNAME=;
-
-
-/*   START OF NODE: CHECK_2   */
-%LET _CLIENTTASKLABEL='CHECK_2';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
-
-GOPTIONS ACCESSIBLE;
-%_eg_conditional_dropds(WORK.CHECK_2_SUM);
-
-PROC SQL;
-   CREATE TABLE WORK.CHECK_2_SUM AS 
+   CREATE TABLE WORK."MEPS_FULLYR_2012_REVER_SUM"n AS 
    SELECT t1.DUPERSID, 
           t1.AGE12X, 
           t1.SEX, 
@@ -1038,6 +1118,226 @@ PROC SQL;
           t1.RACETHX, 
           t1.MARRY12X, 
           t1.EDUYRDEG, 
+          t1.EDRECODE, 
+          t1.UNEMP12X, 
+          t1.UNEIMP12, 
+          t1.ADAPPT42, 
+          t1.ADCAPE42, 
+          t1.ADCLIM42, 
+          t1.ADCMPD42, 
+          t1.ADCMPM42, 
+          t1.ADCMPY42, 
+          t1.ADDAYA42, 
+          t1.ADDOWN42, 
+          t1.ADDPRS42, 
+          t1.ADDRBP42, 
+          t1.ADEFRT42, 
+          t1.ADEGMC42, 
+          t1.ADEXPL42, 
+          t1.ADEZUN42, 
+          t1.ADFFRM42, 
+          t1.ADFHLP42, 
+          t1.ADGENH42, 
+          t1.ADHECR42, 
+          t1.ADHOPE42, 
+          t1.ADILCR42, 
+          t1.ADILWW42, 
+          t1.ADINSA42, 
+          t1.ADINSB42, 
+          t1.ADINST42, 
+          t1.ADINTR42, 
+          t1.ADL3MO42, 
+          t1.ADLANG42, 
+          t1.ADLHLP42, 
+          t1.ADLIST42, 
+          t1.ADMALS42, 
+          t1.ADMWLM42, 
+          t1.ADNDCR42, 
+          t1.ADNERV42, 
+          t1.ADNRGY42, 
+          t1.ADNSMK42, 
+          t1.ADOVER42, 
+          t1.ADPAIN42, 
+          t1.ADPALS42, 
+          t1.ADPRTM42, 
+          t1.ADPRX42, 
+          t1.ADPWLM42, 
+          t1.ADRESP42, 
+          t1.ADREST42, 
+          t1.ADRISK42, 
+          t1.ADRTCR42, 
+          t1.ADRTWW42, 
+          t1.ADSAD42, 
+          t1.ADSMOK42, 
+          t1.ADSOCA42, 
+          t1.ADSPEC42, 
+          t1.ADSPRF42, 
+          t1.ADTLHW42, 
+          t1.ADUPRO42, 
+          t1.ADWRTH42, 
+          t1.PHQ242, 
+          t1.HPRAP12, 
+          t1.HPRAU12, 
+          t1.HPRDE12, 
+          t1.HPRFE12, 
+          t1.HPRJA12, 
+          t1.HPRJL12, 
+          t1.HPRJU12, 
+          t1.HPRMA12, 
+          t1.HPRMY12, 
+          t1.HPRNO12, 
+          t1.HPROC12, 
+          t1.HPRSE12, 
+          t1.MDDLPR42, 
+          t1.MDDLRS42, 
+          t1.MDUNAB42, 
+          t1.MDUNPR42, 
+          t1.MDUNRS42, 
+          t1.MDDLAY42, 
+          t1.DNUNAB42, 
+          t1.DNUNPR42, 
+          t1.DNUNRS42, 
+          t1.DNDLAY42, 
+          t1.DNDLPR42, 
+          t1.DNDLRS42, 
+          t1.RTHLTH31, 
+          t1.RTHLTH42, 
+          t1.RTHLTH53, 
+          t1.ARTHAGED, 
+          t1.ARTHDX, 
+          t1.ARTHTYPE, 
+          t1.ASTHAGED, 
+          t1.ASTHDX, 
+          t1.ADHDADDX, 
+          t1.ADHDAGED, 
+          t1.DSDIA53, 
+          t1.MIAGED, 
+          t1.MIDX, 
+          t1.HIBPAGED, 
+          t1.HIBPDX, 
+          t1.LEUKAGED, 
+          t1.LEUKREMS, 
+          t1.LUNGAGED, 
+          t1.LUNGREMS, 
+          t1.LYMPAGED, 
+          t1.LYMPREMS, 
+          t1.MELAAGED, 
+          t1.MELAREMS, 
+          t1.OTHRAGED, 
+          t1.OHRTAGED, 
+          t1.OHRTDX, 
+          t1.SKDKAGED, 
+          t1.SKDKREMS, 
+          t1.SKNMAGED, 
+          t1.STRKAGED, 
+          t1.STRKDX, 
+          t1.THRTAGED, 
+          t1.THRTREMS, 
+          t1.THYRAGED, 
+          t1.THYRREMS, 
+          t1.AIDHLP31, 
+          t1.AIDHLP53, 
+          t1.SSECP12X, 
+          t1.BUSIMP12, 
+          t1.BUSNP12X, 
+          t1.BRAIAGED, 
+          t1.BRAIREMS, 
+          t1.BRSTAGED, 
+          t1.BRSTEX53, 
+          t1.BRSTREMS, 
+          t1.CABLADDR, 
+          t1.CABRAIN, 
+          t1.CABREAST, 
+          t1.CACERVIX, 
+          t1.CACOLON, 
+          t1.CALEUKEM, 
+          t1.CALUNG, 
+          t1.CALYMPH, 
+          t1.CAMELANO, 
+          t1.CANCERDX, 
+          t1.CAOTHER, 
+          t1.CAPROSTA, 
+          t1.CARECO42, 
+          t1.CASHP12X, 
+          t1.CASKINDK, 
+          t1.CASKINNM, 
+          t1.CATHROAT, 
+          t1.CATHYROD, 
+          t1.CERVAGED, 
+          t1.CERVREMS, 
+          t1.SAQ_GENH, 
+          t1.SAQ_HEALIMACT, 
+          t1.SAQ_HEALIMSTRS, 
+          t1.SAQ_ALPHYS, 
+          t1.SAQ_WORKLIM, 
+          t1.SAQ_ALMENT, 
+          t1.SAQ_WLMENT, 
+          t1.SAQ_FELTPEACE, 
+          t1.SAQ_PAINLIM, 
+          t1.SAQ_ENERGY, 
+          t1.SAQ_DOWNHEART, 
+          t1.SAQ_SOCACT, 
+          t1.Marital_Status, 
+          t1.Education_Level, 
+          t1.GOT_CARE, 
+          t1.NUMB_VISIT_MED, 
+          t1.EASY_MED_CARE, 
+          t1.HEALTH_CARE_RATING, 
+          t1.SMOKING, 
+          t1.HEALTH_STAT1, 
+          t1.HEALTH_STAT2, 
+          t1.HEALTH_STAT3, 
+          t1.FEEL_NERV, 
+          t1.FEEL_WORTHLESS, 
+          t1.FEEL_RESTLESS, 
+          t1.SAQ_ENERGY_rev, 
+          t1.SAQ_FELTPEACE_rev, 
+          t1.SAQ_GENH_rev, 
+          t1.SAQ_PAINLIM_rev, 
+          /* SUM_SAQ_SF12 */
+            
+            (t1.SAQ_ENERGY_rev+t1.SAQ_FELTPEACE_rev+t1.SAQ_GENH_rev+t1.SAQ_PAINLIM_rev+t1.SAQ_HEALIMACT+t1.SAQ_HEALIMSTRS+t1.SAQ_ALPHYS+t1.SAQ_WORKLIM+t1.SAQ_ALMENT+t1.SAQ_WLMENT+t1.SAQ_DOWNHEART+t1.SAQ_SOCACT) 
+            LABEL="Sum Variable - Aggregate Overall Health Score from SF-12" AS SUM_SAQ_SF12
+      FROM WORK.MEPS_FULLYR_2012_REVERSE t1;
+QUIT;
+
+GOPTIONS NOACCESSIBLE;
+
+
+%LET _CLIENTTASKLABEL=;
+%LET _CLIENTPROJECTPATH=;
+%LET _CLIENTPROJECTNAME=;
+
+
+/*   START OF NODE: SUM Categorical for Sum1   */
+%LET _CLIENTTASKLABEL='SUM Categorical for Sum1';
+%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011315.egp';
+%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011315.egp';
+
+GOPTIONS ACCESSIBLE;
+%_eg_conditional_dropds(WORK.MEPS_FULLYR_2012_SUMCATE);
+
+PROC SQL;
+   CREATE TABLE WORK."MEPS_FULLYR_2012_SUMCATE"n AS 
+   SELECT /* Quartiles_Categorical */
+            (CASE  
+               WHEN t1.SUM_SAQ_SF12 >=2 and t1.SUM_SAQ_SF12 <= 41
+               THEN 1
+               WHEN t1.SUM_SAQ_SF12 >= 42  and t1.SUM_SAQ_SF12 <= 48
+               THEN 2
+               WHEN t1.SUM_SAQ_SF12 >= 49  and t1.SUM_SAQ_SF12 <= 52
+               THEN 3
+               WHEN t1.SUM_SAQ_SF12 >= 53  and t1.SUM_SAQ_SF12 <= 56
+               THEN 4
+            END) LABEL="Categorical variable from SF-12 Sum Variable" AS Quartiles_Categorical, 
+          t1.DUPERSID, 
+          t1.AGE12X, 
+          t1.SEX, 
+          t1.REGION12, 
+          t1.RACETHX, 
+          t1.MARRY12X, 
+          t1.EDUYRDEG, 
+          t1.EDRECODE, 
           t1.UNEMP12X, 
           t1.UNEIMP12, 
           t1.ADAPPT42, 
@@ -1214,9 +1514,1401 @@ PROC SQL;
           t1.SAQ_GENH_rev, 
           t1.SAQ_PAINLIM_rev, 
           t1.SUM_SAQ_SF12
-      FROM WORK.MEPS_FULLYR_2012_REVER_SUM t1
-      WHERE t1.SUM_SAQ_SF12 = 2;
+      FROM WORK.MEPS_FULLYR_2012_REVER_SUM t1;
 QUIT;
+
+GOPTIONS NOACCESSIBLE;
+
+
+%LET _CLIENTTASKLABEL=;
+%LET _CLIENTPROJECTPATH=;
+%LET _CLIENTPROJECTNAME=;
+
+
+/*   START OF NODE: Miss var. Doc-Pat   */
+%LET _CLIENTTASKLABEL='Miss var. Doc-Pat';
+%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011315.egp';
+%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011315.egp';
+
+GOPTIONS ACCESSIBLE;
+%_eg_conditional_dropds(WORK.MEPS_FULLYR_2012_Miss);
+
+PROC SQL;
+   CREATE TABLE WORK."MEPS_FULLYR_2012_Miss"n AS 
+   SELECT t1.Quartiles_Categorical, 
+          t1.DUPERSID, 
+          t1.AGE12X, 
+          t1.SEX, 
+          t1.REGION12, 
+          t1.RACETHX, 
+          t1.MARRY12X, 
+          t1.EDUYRDEG, 
+          t1.EDRECODE, 
+          t1.UNEMP12X, 
+          t1.UNEIMP12, 
+          t1.ADAPPT42, 
+          t1.ADCAPE42, 
+          t1.ADCLIM42, 
+          t1.ADCMPD42, 
+          t1.ADCMPM42, 
+          t1.ADCMPY42, 
+          t1.ADDAYA42, 
+          t1.ADDOWN42, 
+          t1.ADDPRS42, 
+          t1.ADDRBP42, 
+          t1.ADEFRT42, 
+          t1.ADEGMC42, 
+          t1.ADEXPL42, 
+          t1.ADEZUN42, 
+          t1.ADFFRM42, 
+          t1.ADFHLP42, 
+          t1.ADGENH42, 
+          t1.ADHECR42, 
+          t1.ADHOPE42, 
+          t1.ADILCR42, 
+          t1.ADILWW42, 
+          t1.ADINSA42, 
+          t1.ADINSB42, 
+          t1.ADINST42, 
+          t1.ADINTR42, 
+          t1.ADL3MO42, 
+          t1.ADLANG42, 
+          t1.ADLHLP42, 
+          t1.ADLIST42, 
+          t1.ADMALS42, 
+          t1.ADMWLM42, 
+          t1.ADNDCR42, 
+          t1.ADNERV42, 
+          t1.ADNRGY42, 
+          t1.ADNSMK42, 
+          t1.ADOVER42, 
+          t1.ADPAIN42, 
+          t1.ADPALS42, 
+          t1.ADPRTM42, 
+          t1.ADPRX42, 
+          t1.ADPWLM42, 
+          t1.ADRESP42, 
+          t1.ADREST42, 
+          t1.ADRISK42, 
+          t1.ADRTCR42, 
+          t1.ADRTWW42, 
+          t1.ADSAD42, 
+          t1.ADSMOK42, 
+          t1.ADSOCA42, 
+          t1.ADSPEC42, 
+          t1.ADSPRF42, 
+          t1.ADTLHW42, 
+          t1.ADUPRO42, 
+          t1.ADWRTH42, 
+          t1.PHQ242, 
+          t1.HPRAP12, 
+          t1.HPRAU12, 
+          t1.HPRDE12, 
+          t1.HPRFE12, 
+          t1.HPRJA12, 
+          t1.HPRJL12, 
+          t1.HPRJU12, 
+          t1.HPRMA12, 
+          t1.HPRMY12, 
+          t1.HPRNO12, 
+          t1.HPROC12, 
+          t1.HPRSE12, 
+          t1.MDDLPR42, 
+          t1.MDDLRS42, 
+          t1.MDUNAB42, 
+          t1.MDUNPR42, 
+          t1.MDUNRS42, 
+          t1.MDDLAY42, 
+          t1.DNUNAB42, 
+          t1.DNUNPR42, 
+          t1.DNUNRS42, 
+          t1.DNDLAY42, 
+          t1.DNDLPR42, 
+          t1.DNDLRS42, 
+          t1.RTHLTH31, 
+          t1.RTHLTH42, 
+          t1.RTHLTH53, 
+          t1.ARTHAGED, 
+          t1.ARTHDX, 
+          t1.ARTHTYPE, 
+          t1.ASTHAGED, 
+          t1.ASTHDX, 
+          t1.ADHDADDX, 
+          t1.ADHDAGED, 
+          t1.DSDIA53, 
+          t1.MIAGED, 
+          t1.MIDX, 
+          t1.HIBPAGED, 
+          t1.HIBPDX, 
+          t1.LEUKAGED, 
+          t1.LEUKREMS, 
+          t1.LUNGAGED, 
+          t1.LUNGREMS, 
+          t1.LYMPAGED, 
+          t1.LYMPREMS, 
+          t1.MELAAGED, 
+          t1.MELAREMS, 
+          t1.OTHRAGED, 
+          t1.OHRTAGED, 
+          t1.OHRTDX, 
+          t1.SKDKAGED, 
+          t1.SKDKREMS, 
+          t1.SKNMAGED, 
+          t1.STRKAGED, 
+          t1.STRKDX, 
+          t1.THRTAGED, 
+          t1.THRTREMS, 
+          t1.THYRAGED, 
+          t1.THYRREMS, 
+          t1.AIDHLP31, 
+          t1.AIDHLP53, 
+          t1.SSECP12X, 
+          t1.BUSIMP12, 
+          t1.BUSNP12X, 
+          t1.BRAIAGED, 
+          t1.BRAIREMS, 
+          t1.BRSTAGED, 
+          t1.BRSTEX53, 
+          t1.BRSTREMS, 
+          t1.CABLADDR, 
+          t1.CABRAIN, 
+          t1.CABREAST, 
+          t1.CACERVIX, 
+          t1.CACOLON, 
+          t1.CALEUKEM, 
+          t1.CALUNG, 
+          t1.CALYMPH, 
+          t1.CAMELANO, 
+          t1.CANCERDX, 
+          t1.CAOTHER, 
+          t1.CAPROSTA, 
+          t1.CARECO42, 
+          t1.CASHP12X, 
+          t1.CASKINDK, 
+          t1.CASKINNM, 
+          t1.CATHROAT, 
+          t1.CATHYROD, 
+          t1.CERVAGED, 
+          t1.CERVREMS, 
+          t1.SAQ_GENH, 
+          t1.SAQ_HEALIMACT, 
+          t1.SAQ_HEALIMSTRS, 
+          t1.SAQ_ALPHYS, 
+          t1.SAQ_WORKLIM, 
+          t1.SAQ_ALMENT, 
+          t1.SAQ_WLMENT, 
+          t1.SAQ_FELTPEACE, 
+          t1.SAQ_PAINLIM, 
+          t1.SAQ_ENERGY, 
+          t1.SAQ_DOWNHEART, 
+          t1.SAQ_SOCACT, 
+          t1.Marital_Status, 
+          t1.Education_Level, 
+          t1.GOT_CARE, 
+          t1.NUMB_VISIT_MED, 
+          t1.EASY_MED_CARE, 
+          t1.HEALTH_CARE_RATING, 
+          t1.SMOKING, 
+          t1.HEALTH_STAT1, 
+          t1.HEALTH_STAT2, 
+          t1.HEALTH_STAT3, 
+          t1.FEEL_NERV, 
+          t1.FEEL_WORTHLESS, 
+          t1.FEEL_RESTLESS, 
+          t1.SAQ_ENERGY_rev, 
+          t1.SAQ_FELTPEACE_rev, 
+          t1.SAQ_GENH_rev, 
+          t1.SAQ_PAINLIM_rev, 
+          t1.SUM_SAQ_SF12, 
+          /* SAQ2_DOCLIST */
+            (CASE 
+               WHEN -1 = t1.ADLIST42 THEN .
+               WHEN -7 = t1.ADLIST42 THEN .
+               WHEN -9 = t1.ADLIST42 THEN .
+               ELSE t1.ADLIST42
+            END) LABEL="Doctor listened to patient" AS SAQ2_DOCLIST, 
+          /* SAQ2_DOCUND */
+            (CASE 
+               WHEN -1 = t1.ADEXPL42 THEN .
+               WHEN -9 = t1.ADEXPL42 THEN .
+               ELSE t1.ADEXPL42
+            END) LABEL="Doctor explained it so understood" AS SAQ2_DOCUND, 
+          /* SAQ2_DOCRESP */
+            (CASE 
+               WHEN -1 = t1.ADRESP42 THEN .
+               WHEN -9 = t1.ADRESP42 THEN .
+               ELSE t1.ADRESP42
+            END) LABEL="Doctor Showed Respect" AS SAQ2_DOCRESP, 
+          /* SAQ2_DOCTIME */
+            (CASE 
+               WHEN -1 = t1.ADPRTM42 THEN .
+               WHEN -9 = t1.ADPRTM42 THEN .
+               ELSE t1.ADPRTM42
+            END) LABEL="Doctor spent enough time with patient" AS SAQ2_DOCTIME, 
+          /* SAQ2_DOCSPEC */
+            (CASE 
+               WHEN -1 = t1.ADINST42 THEN .
+               WHEN -8 = t1.ADINST42 THEN .
+               WHEN -9 = t1.ADINST42 THEN .
+               ELSE t1.ADINST42
+            END) LABEL="Doctor gave specific instructions" AS SAQ2_DOCSPEC, 
+          /* SAQ2_EZUN */
+            (CASE 
+               WHEN -1 = t1.ADEZUN42 THEN .
+               WHEN -9 = t1.ADEZUN42 THEN .
+               ELSE t1.ADEZUN42
+            END) LABEL="Doctor given instruction was easy to understand" AS SAQ2_EZUN, 
+          /* SAQ2_DOCFOLLOW */
+            (CASE 
+               WHEN -1 = t1.ADTLHW42 THEN .
+               WHEN -8 = t1.ADTLHW42 THEN .
+               WHEN -9 = t1.ADTLHW42 THEN .
+               ELSE t1.ADTLHW42
+            END) LABEL="Doctor asked patient to describe how to follow" AS SAQ2_DOCFOLLOW
+      FROM WORK.MEPS_FULLYR_2012_SUMCATE t1;
+QUIT;
+
+GOPTIONS NOACCESSIBLE;
+
+
+%LET _CLIENTTASKLABEL=;
+%LET _CLIENTPROJECTPATH=;
+%LET _CLIENTPROJECTNAME=;
+
+
+/*   START OF NODE: Reverse Code Doc-Pat   */
+%LET _CLIENTTASKLABEL='Reverse Code Doc-Pat';
+%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011315.egp';
+%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011315.egp';
+
+GOPTIONS ACCESSIBLE;
+%_eg_conditional_dropds(WORK.MEPS_FULLYR_2012_missrev);
+
+PROC SQL;
+   CREATE TABLE WORK."MEPS_FULLYR_2012_missrev"n AS 
+   SELECT t1.Quartiles_Categorical, 
+          t1.DUPERSID, 
+          t1.AGE12X, 
+          t1.SEX, 
+          t1.REGION12, 
+          t1.RACETHX, 
+          t1.MARRY12X, 
+          t1.EDUYRDEG, 
+          t1.EDRECODE, 
+          t1.UNEMP12X, 
+          t1.UNEIMP12, 
+          t1.ADAPPT42, 
+          t1.ADCAPE42, 
+          t1.ADCLIM42, 
+          t1.ADCMPD42, 
+          t1.ADCMPM42, 
+          t1.ADCMPY42, 
+          t1.ADDAYA42, 
+          t1.ADDOWN42, 
+          t1.ADDPRS42, 
+          t1.ADDRBP42, 
+          t1.ADEFRT42, 
+          t1.ADEGMC42, 
+          t1.ADEXPL42, 
+          t1.ADEZUN42, 
+          t1.ADFFRM42, 
+          t1.ADFHLP42, 
+          t1.ADGENH42, 
+          t1.ADHECR42, 
+          t1.ADHOPE42, 
+          t1.ADILCR42, 
+          t1.ADILWW42, 
+          t1.ADINSA42, 
+          t1.ADINSB42, 
+          t1.ADINST42, 
+          t1.ADINTR42, 
+          t1.ADL3MO42, 
+          t1.ADLANG42, 
+          t1.ADLHLP42, 
+          t1.ADLIST42, 
+          t1.ADMALS42, 
+          t1.ADMWLM42, 
+          t1.ADNDCR42, 
+          t1.ADNERV42, 
+          t1.ADNRGY42, 
+          t1.ADNSMK42, 
+          t1.ADOVER42, 
+          t1.ADPAIN42, 
+          t1.ADPALS42, 
+          t1.ADPRTM42, 
+          t1.ADPRX42, 
+          t1.ADPWLM42, 
+          t1.ADRESP42, 
+          t1.ADREST42, 
+          t1.ADRISK42, 
+          t1.ADRTCR42, 
+          t1.ADRTWW42, 
+          t1.ADSAD42, 
+          t1.ADSMOK42, 
+          t1.ADSOCA42, 
+          t1.ADSPEC42, 
+          t1.ADSPRF42, 
+          t1.ADTLHW42, 
+          t1.ADUPRO42, 
+          t1.ADWRTH42, 
+          t1.PHQ242, 
+          t1.HPRAP12, 
+          t1.HPRAU12, 
+          t1.HPRDE12, 
+          t1.HPRFE12, 
+          t1.HPRJA12, 
+          t1.HPRJL12, 
+          t1.HPRJU12, 
+          t1.HPRMA12, 
+          t1.HPRMY12, 
+          t1.HPRNO12, 
+          t1.HPROC12, 
+          t1.HPRSE12, 
+          t1.MDDLPR42, 
+          t1.MDDLRS42, 
+          t1.MDUNAB42, 
+          t1.MDUNPR42, 
+          t1.MDUNRS42, 
+          t1.MDDLAY42, 
+          t1.DNUNAB42, 
+          t1.DNUNPR42, 
+          t1.DNUNRS42, 
+          t1.DNDLAY42, 
+          t1.DNDLPR42, 
+          t1.DNDLRS42, 
+          t1.RTHLTH31, 
+          t1.RTHLTH42, 
+          t1.RTHLTH53, 
+          t1.ARTHAGED, 
+          t1.ARTHDX, 
+          t1.ARTHTYPE, 
+          t1.ASTHAGED, 
+          t1.ASTHDX, 
+          t1.ADHDADDX, 
+          t1.ADHDAGED, 
+          t1.DSDIA53, 
+          t1.MIAGED, 
+          t1.MIDX, 
+          t1.HIBPAGED, 
+          t1.HIBPDX, 
+          t1.LEUKAGED, 
+          t1.LEUKREMS, 
+          t1.LUNGAGED, 
+          t1.LUNGREMS, 
+          t1.LYMPAGED, 
+          t1.LYMPREMS, 
+          t1.MELAAGED, 
+          t1.MELAREMS, 
+          t1.OTHRAGED, 
+          t1.OHRTAGED, 
+          t1.OHRTDX, 
+          t1.SKDKAGED, 
+          t1.SKDKREMS, 
+          t1.SKNMAGED, 
+          t1.STRKAGED, 
+          t1.STRKDX, 
+          t1.THRTAGED, 
+          t1.THRTREMS, 
+          t1.THYRAGED, 
+          t1.THYRREMS, 
+          t1.AIDHLP31, 
+          t1.AIDHLP53, 
+          t1.SSECP12X, 
+          t1.BUSIMP12, 
+          t1.BUSNP12X, 
+          t1.BRAIAGED, 
+          t1.BRAIREMS, 
+          t1.BRSTAGED, 
+          t1.BRSTEX53, 
+          t1.BRSTREMS, 
+          t1.CABLADDR, 
+          t1.CABRAIN, 
+          t1.CABREAST, 
+          t1.CACERVIX, 
+          t1.CACOLON, 
+          t1.CALEUKEM, 
+          t1.CALUNG, 
+          t1.CALYMPH, 
+          t1.CAMELANO, 
+          t1.CANCERDX, 
+          t1.CAOTHER, 
+          t1.CAPROSTA, 
+          t1.CARECO42, 
+          t1.CASHP12X, 
+          t1.CASKINDK, 
+          t1.CASKINNM, 
+          t1.CATHROAT, 
+          t1.CATHYROD, 
+          t1.CERVAGED, 
+          t1.CERVREMS, 
+          t1.SAQ_GENH, 
+          t1.SAQ_HEALIMACT, 
+          t1.SAQ_HEALIMSTRS, 
+          t1.SAQ_ALPHYS, 
+          t1.SAQ_WORKLIM, 
+          t1.SAQ_ALMENT, 
+          t1.SAQ_WLMENT, 
+          t1.SAQ_FELTPEACE, 
+          t1.SAQ_PAINLIM, 
+          t1.SAQ_ENERGY, 
+          t1.SAQ_DOWNHEART, 
+          t1.SAQ_SOCACT, 
+          t1.Marital_Status, 
+          t1.Education_Level, 
+          t1.GOT_CARE, 
+          t1.NUMB_VISIT_MED, 
+          t1.EASY_MED_CARE, 
+          t1.HEALTH_CARE_RATING, 
+          t1.SMOKING, 
+          t1.HEALTH_STAT1, 
+          t1.HEALTH_STAT2, 
+          t1.HEALTH_STAT3, 
+          t1.FEEL_NERV, 
+          t1.FEEL_WORTHLESS, 
+          t1.FEEL_RESTLESS, 
+          t1.SAQ_ENERGY_rev, 
+          t1.SAQ_FELTPEACE_rev, 
+          t1.SAQ_GENH_rev, 
+          t1.SAQ_PAINLIM_rev, 
+          t1.SUM_SAQ_SF12, 
+          t1.SAQ2_DOCLIST, 
+          t1.SAQ2_DOCUND, 
+          t1.SAQ2_DOCRESP, 
+          t1.SAQ2_DOCTIME, 
+          t1.SAQ2_DOCSPEC, 
+          t1.SAQ2_EZUN, 
+          t1.SAQ2_DOCFOLLOW, 
+          /* SAQ2_DOCSPEC_rev */
+            (3-t1.SAQ2_DOCSPEC) LABEL="Doctor gave specific instruction recode" AS SAQ2_DOCSPEC_rev
+      FROM WORK.MEPS_FULLYR_2012_MISS t1;
+QUIT;
+
+GOPTIONS NOACCESSIBLE;
+
+
+%LET _CLIENTTASKLABEL=;
+%LET _CLIENTPROJECTPATH=;
+%LET _CLIENTPROJECTNAME=;
+
+
+/*   START OF NODE: SUM Variable Doc Pat   */
+%LET _CLIENTTASKLABEL='SUM Variable Doc Pat';
+%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011315.egp';
+%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011315.egp';
+
+GOPTIONS ACCESSIBLE;
+%_eg_conditional_dropds(WORK.MEPS_FULLYR_2012_sum2);
+
+PROC SQL;
+   CREATE TABLE WORK."MEPS_FULLYR_2012_sum2"n AS 
+   SELECT t1.Quartiles_Categorical, 
+          t1.DUPERSID, 
+          t1.AGE12X, 
+          t1.SEX, 
+          t1.REGION12, 
+          t1.RACETHX, 
+          t1.MARRY12X, 
+          t1.EDUYRDEG, 
+          t1.EDRECODE, 
+          t1.UNEMP12X, 
+          t1.UNEIMP12, 
+          t1.ADAPPT42, 
+          t1.ADCAPE42, 
+          t1.ADCLIM42, 
+          t1.ADCMPD42, 
+          t1.ADCMPM42, 
+          t1.ADCMPY42, 
+          t1.ADDAYA42, 
+          t1.ADDOWN42, 
+          t1.ADDPRS42, 
+          t1.ADDRBP42, 
+          t1.ADEFRT42, 
+          t1.ADEGMC42, 
+          t1.ADEXPL42, 
+          t1.ADEZUN42, 
+          t1.ADFFRM42, 
+          t1.ADFHLP42, 
+          t1.ADGENH42, 
+          t1.ADHECR42, 
+          t1.ADHOPE42, 
+          t1.ADILCR42, 
+          t1.ADILWW42, 
+          t1.ADINSA42, 
+          t1.ADINSB42, 
+          t1.ADINST42, 
+          t1.ADINTR42, 
+          t1.ADL3MO42, 
+          t1.ADLANG42, 
+          t1.ADLHLP42, 
+          t1.ADLIST42, 
+          t1.ADMALS42, 
+          t1.ADMWLM42, 
+          t1.ADNDCR42, 
+          t1.ADNERV42, 
+          t1.ADNRGY42, 
+          t1.ADNSMK42, 
+          t1.ADOVER42, 
+          t1.ADPAIN42, 
+          t1.ADPALS42, 
+          t1.ADPRTM42, 
+          t1.ADPRX42, 
+          t1.ADPWLM42, 
+          t1.ADRESP42, 
+          t1.ADREST42, 
+          t1.ADRISK42, 
+          t1.ADRTCR42, 
+          t1.ADRTWW42, 
+          t1.ADSAD42, 
+          t1.ADSMOK42, 
+          t1.ADSOCA42, 
+          t1.ADSPEC42, 
+          t1.ADSPRF42, 
+          t1.ADTLHW42, 
+          t1.ADUPRO42, 
+          t1.ADWRTH42, 
+          t1.PHQ242, 
+          t1.HPRAP12, 
+          t1.HPRAU12, 
+          t1.HPRDE12, 
+          t1.HPRFE12, 
+          t1.HPRJA12, 
+          t1.HPRJL12, 
+          t1.HPRJU12, 
+          t1.HPRMA12, 
+          t1.HPRMY12, 
+          t1.HPRNO12, 
+          t1.HPROC12, 
+          t1.HPRSE12, 
+          t1.MDDLPR42, 
+          t1.MDDLRS42, 
+          t1.MDUNAB42, 
+          t1.MDUNPR42, 
+          t1.MDUNRS42, 
+          t1.MDDLAY42, 
+          t1.DNUNAB42, 
+          t1.DNUNPR42, 
+          t1.DNUNRS42, 
+          t1.DNDLAY42, 
+          t1.DNDLPR42, 
+          t1.DNDLRS42, 
+          t1.RTHLTH31, 
+          t1.RTHLTH42, 
+          t1.RTHLTH53, 
+          t1.ARTHAGED, 
+          t1.ARTHDX, 
+          t1.ARTHTYPE, 
+          t1.ASTHAGED, 
+          t1.ASTHDX, 
+          t1.ADHDADDX, 
+          t1.ADHDAGED, 
+          t1.DSDIA53, 
+          t1.MIAGED, 
+          t1.MIDX, 
+          t1.HIBPAGED, 
+          t1.HIBPDX, 
+          t1.LEUKAGED, 
+          t1.LEUKREMS, 
+          t1.LUNGAGED, 
+          t1.LUNGREMS, 
+          t1.LYMPAGED, 
+          t1.LYMPREMS, 
+          t1.MELAAGED, 
+          t1.MELAREMS, 
+          t1.OTHRAGED, 
+          t1.OHRTAGED, 
+          t1.OHRTDX, 
+          t1.SKDKAGED, 
+          t1.SKDKREMS, 
+          t1.SKNMAGED, 
+          t1.STRKAGED, 
+          t1.STRKDX, 
+          t1.THRTAGED, 
+          t1.THRTREMS, 
+          t1.THYRAGED, 
+          t1.THYRREMS, 
+          t1.AIDHLP31, 
+          t1.AIDHLP53, 
+          t1.SSECP12X, 
+          t1.BUSIMP12, 
+          t1.BUSNP12X, 
+          t1.BRAIAGED, 
+          t1.BRAIREMS, 
+          t1.BRSTAGED, 
+          t1.BRSTEX53, 
+          t1.BRSTREMS, 
+          t1.CABLADDR, 
+          t1.CABRAIN, 
+          t1.CABREAST, 
+          t1.CACERVIX, 
+          t1.CACOLON, 
+          t1.CALEUKEM, 
+          t1.CALUNG, 
+          t1.CALYMPH, 
+          t1.CAMELANO, 
+          t1.CANCERDX, 
+          t1.CAOTHER, 
+          t1.CAPROSTA, 
+          t1.CARECO42, 
+          t1.CASHP12X, 
+          t1.CASKINDK, 
+          t1.CASKINNM, 
+          t1.CATHROAT, 
+          t1.CATHYROD, 
+          t1.CERVAGED, 
+          t1.CERVREMS, 
+          t1.SAQ_GENH, 
+          t1.SAQ_HEALIMACT, 
+          t1.SAQ_HEALIMSTRS, 
+          t1.SAQ_ALPHYS, 
+          t1.SAQ_WORKLIM, 
+          t1.SAQ_ALMENT, 
+          t1.SAQ_WLMENT, 
+          t1.SAQ_FELTPEACE, 
+          t1.SAQ_PAINLIM, 
+          t1.SAQ_ENERGY, 
+          t1.SAQ_DOWNHEART, 
+          t1.SAQ_SOCACT, 
+          t1.Marital_Status, 
+          t1.Education_Level, 
+          t1.GOT_CARE, 
+          t1.NUMB_VISIT_MED, 
+          t1.EASY_MED_CARE, 
+          t1.HEALTH_CARE_RATING, 
+          t1.SMOKING, 
+          t1.HEALTH_STAT1, 
+          t1.HEALTH_STAT2, 
+          t1.HEALTH_STAT3, 
+          t1.FEEL_NERV, 
+          t1.FEEL_WORTHLESS, 
+          t1.FEEL_RESTLESS, 
+          t1.SAQ_ENERGY_rev, 
+          t1.SAQ_FELTPEACE_rev, 
+          t1.SAQ_GENH_rev, 
+          t1.SAQ_PAINLIM_rev, 
+          t1.SUM_SAQ_SF12, 
+          t1.SAQ2_DOCLIST, 
+          t1.SAQ2_DOCUND, 
+          t1.SAQ2_DOCRESP, 
+          t1.SAQ2_DOCTIME, 
+          t1.SAQ2_DOCSPEC, 
+          t1.SAQ2_EZUN, 
+          t1.SAQ2_DOCFOLLOW, 
+          t1.SAQ2_DOCSPEC_rev, 
+          /* SAQ2_DocPat_SUM */
+            
+            (t1.SAQ2_DOCLIST+t1.SAQ2_DOCUND+t1.SAQ2_DOCRESP+t1.SAQ2_DOCTIME+t1.SAQ2_EZUN+t1.SAQ2_DOCSPEC_rev+t1.SAQ2_DOCFOLLOW) 
+            LABEL="Sum variable for aggregate doctor patient score" AS SAQ2_DocPat_SUM
+      FROM WORK.MEPS_FULLYR_2012_MISSREV t1;
+QUIT;
+
+GOPTIONS NOACCESSIBLE;
+
+
+%LET _CLIENTTASKLABEL=;
+%LET _CLIENTPROJECTPATH=;
+%LET _CLIENTPROJECTNAME=;
+
+
+/*   START OF NODE: Categorical for Sum2   */
+%LET _CLIENTTASKLABEL='Categorical for Sum2';
+%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011315.egp';
+%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011315.egp';
+
+GOPTIONS ACCESSIBLE;
+%_eg_conditional_dropds(WORK.MEPS_FULLYR_2012_SUM2_cate);
+
+PROC SQL;
+   CREATE TABLE WORK."MEPS_FULLYR_2012_SUM2_cate"n AS 
+   SELECT /* SAQ2_DocPatRel_sumcate */
+            (CASE  
+               WHEN  t1.SAQ2_DocPat_SUM >= 6 and t1.SAQ2_DocPat_SUM <= 17
+               THEN 1
+               WHEN  t1.SAQ2_DocPat_SUM >= 18  and t1.SAQ2_DocPat_SUM <= 21
+               THEN 2
+               WHEN t1.SAQ2_DocPat_SUM >= 22 and  t1.SAQ2_DocPat_SUM <= 24
+               THEN 3
+               WHEN t1.SAQ2_DocPat_SUM >= 25  and t1.SAQ2_DocPat_SUM <= 26
+               THEN 4
+            END) LABEL="Summary categorical variable for Doctor Patient Relationship Score" AS SAQ2_DocPatRel_sumcate, 
+          t1.Quartiles_Categorical, 
+          t1.DUPERSID, 
+          t1.AGE12X, 
+          t1.SEX, 
+          t1.REGION12, 
+          t1.RACETHX, 
+          t1.MARRY12X, 
+          t1.EDUYRDEG, 
+          t1.EDRECODE, 
+          t1.UNEMP12X, 
+          t1.UNEIMP12, 
+          t1.ADAPPT42, 
+          t1.ADCAPE42, 
+          t1.ADCLIM42, 
+          t1.ADCMPD42, 
+          t1.ADCMPM42, 
+          t1.ADCMPY42, 
+          t1.ADDAYA42, 
+          t1.ADDOWN42, 
+          t1.ADDPRS42, 
+          t1.ADDRBP42, 
+          t1.ADEFRT42, 
+          t1.ADEGMC42, 
+          t1.ADEXPL42, 
+          t1.ADEZUN42, 
+          t1.ADFFRM42, 
+          t1.ADFHLP42, 
+          t1.ADGENH42, 
+          t1.ADHECR42, 
+          t1.ADHOPE42, 
+          t1.ADILCR42, 
+          t1.ADILWW42, 
+          t1.ADINSA42, 
+          t1.ADINSB42, 
+          t1.ADINST42, 
+          t1.ADINTR42, 
+          t1.ADL3MO42, 
+          t1.ADLANG42, 
+          t1.ADLHLP42, 
+          t1.ADLIST42, 
+          t1.ADMALS42, 
+          t1.ADMWLM42, 
+          t1.ADNDCR42, 
+          t1.ADNERV42, 
+          t1.ADNRGY42, 
+          t1.ADNSMK42, 
+          t1.ADOVER42, 
+          t1.ADPAIN42, 
+          t1.ADPALS42, 
+          t1.ADPRTM42, 
+          t1.ADPRX42, 
+          t1.ADPWLM42, 
+          t1.ADRESP42, 
+          t1.ADREST42, 
+          t1.ADRISK42, 
+          t1.ADRTCR42, 
+          t1.ADRTWW42, 
+          t1.ADSAD42, 
+          t1.ADSMOK42, 
+          t1.ADSOCA42, 
+          t1.ADSPEC42, 
+          t1.ADSPRF42, 
+          t1.ADTLHW42, 
+          t1.ADUPRO42, 
+          t1.ADWRTH42, 
+          t1.PHQ242, 
+          t1.HPRAP12, 
+          t1.HPRAU12, 
+          t1.HPRDE12, 
+          t1.HPRFE12, 
+          t1.HPRJA12, 
+          t1.HPRJL12, 
+          t1.HPRJU12, 
+          t1.HPRMA12, 
+          t1.HPRMY12, 
+          t1.HPRNO12, 
+          t1.HPROC12, 
+          t1.HPRSE12, 
+          t1.MDDLPR42, 
+          t1.MDDLRS42, 
+          t1.MDUNAB42, 
+          t1.MDUNPR42, 
+          t1.MDUNRS42, 
+          t1.MDDLAY42, 
+          t1.DNUNAB42, 
+          t1.DNUNPR42, 
+          t1.DNUNRS42, 
+          t1.DNDLAY42, 
+          t1.DNDLPR42, 
+          t1.DNDLRS42, 
+          t1.RTHLTH31, 
+          t1.RTHLTH42, 
+          t1.RTHLTH53, 
+          t1.ARTHAGED, 
+          t1.ARTHDX, 
+          t1.ARTHTYPE, 
+          t1.ASTHAGED, 
+          t1.ASTHDX, 
+          t1.ADHDADDX, 
+          t1.ADHDAGED, 
+          t1.DSDIA53, 
+          t1.MIAGED, 
+          t1.MIDX, 
+          t1.HIBPAGED, 
+          t1.HIBPDX, 
+          t1.LEUKAGED, 
+          t1.LEUKREMS, 
+          t1.LUNGAGED, 
+          t1.LUNGREMS, 
+          t1.LYMPAGED, 
+          t1.LYMPREMS, 
+          t1.MELAAGED, 
+          t1.MELAREMS, 
+          t1.OTHRAGED, 
+          t1.OHRTAGED, 
+          t1.OHRTDX, 
+          t1.SKDKAGED, 
+          t1.SKDKREMS, 
+          t1.SKNMAGED, 
+          t1.STRKAGED, 
+          t1.STRKDX, 
+          t1.THRTAGED, 
+          t1.THRTREMS, 
+          t1.THYRAGED, 
+          t1.THYRREMS, 
+          t1.AIDHLP31, 
+          t1.AIDHLP53, 
+          t1.SSECP12X, 
+          t1.BUSIMP12, 
+          t1.BUSNP12X, 
+          t1.BRAIAGED, 
+          t1.BRAIREMS, 
+          t1.BRSTAGED, 
+          t1.BRSTEX53, 
+          t1.BRSTREMS, 
+          t1.CABLADDR, 
+          t1.CABRAIN, 
+          t1.CABREAST, 
+          t1.CACERVIX, 
+          t1.CACOLON, 
+          t1.CALEUKEM, 
+          t1.CALUNG, 
+          t1.CALYMPH, 
+          t1.CAMELANO, 
+          t1.CANCERDX, 
+          t1.CAOTHER, 
+          t1.CAPROSTA, 
+          t1.CARECO42, 
+          t1.CASHP12X, 
+          t1.CASKINDK, 
+          t1.CASKINNM, 
+          t1.CATHROAT, 
+          t1.CATHYROD, 
+          t1.CERVAGED, 
+          t1.CERVREMS, 
+          t1.SAQ_GENH, 
+          t1.SAQ_HEALIMACT, 
+          t1.SAQ_HEALIMSTRS, 
+          t1.SAQ_ALPHYS, 
+          t1.SAQ_WORKLIM, 
+          t1.SAQ_ALMENT, 
+          t1.SAQ_WLMENT, 
+          t1.SAQ_FELTPEACE, 
+          t1.SAQ_PAINLIM, 
+          t1.SAQ_ENERGY, 
+          t1.SAQ_DOWNHEART, 
+          t1.SAQ_SOCACT, 
+          t1.Marital_Status, 
+          t1.Education_Level, 
+          t1.GOT_CARE, 
+          t1.NUMB_VISIT_MED, 
+          t1.EASY_MED_CARE, 
+          t1.HEALTH_CARE_RATING, 
+          t1.SMOKING, 
+          t1.HEALTH_STAT1, 
+          t1.HEALTH_STAT2, 
+          t1.HEALTH_STAT3, 
+          t1.FEEL_NERV, 
+          t1.FEEL_WORTHLESS, 
+          t1.FEEL_RESTLESS, 
+          t1.SAQ_ENERGY_rev, 
+          t1.SAQ_FELTPEACE_rev, 
+          t1.SAQ_GENH_rev, 
+          t1.SAQ_PAINLIM_rev, 
+          t1.SUM_SAQ_SF12, 
+          t1.SAQ2_DOCLIST, 
+          t1.SAQ2_DOCUND, 
+          t1.SAQ2_DOCRESP, 
+          t1.SAQ2_DOCTIME, 
+          t1.SAQ2_DOCSPEC, 
+          t1.SAQ2_EZUN, 
+          t1.SAQ2_DOCFOLLOW, 
+          t1.SAQ2_DOCSPEC_rev, 
+          t1.SAQ2_DocPat_SUM
+      FROM WORK.MEPS_FULLYR_2012_SUM2 t1;
+QUIT;
+
+GOPTIONS NOACCESSIBLE;
+
+
+%LET _CLIENTTASKLABEL=;
+%LET _CLIENTPROJECTPATH=;
+%LET _CLIENTPROJECTNAME=;
+
+
+/*   START OF NODE: Marry and Edurcode Missing   */
+%LET _CLIENTTASKLABEL='Marry and Edurcode Missing';
+%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011315.egp';
+%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011315.egp';
+
+GOPTIONS ACCESSIBLE;
+%_eg_conditional_dropds(WORK.MEPS_FULLYR_2012_Marry_Edu);
+
+PROC SQL;
+   CREATE TABLE WORK."MEPS_FULLYR_2012_Marry_Edu"n AS 
+   SELECT t1.SAQ2_DocPatRel_sumcate, 
+          t1.Quartiles_Categorical, 
+          t1.DUPERSID, 
+          t1.AGE12X, 
+          t1.SEX, 
+          t1.REGION12, 
+          t1.RACETHX, 
+          t1.MARRY12X, 
+          t1.EDUYRDEG, 
+          t1.EDRECODE, 
+          t1.UNEMP12X, 
+          t1.UNEIMP12, 
+          t1.ADAPPT42, 
+          t1.ADCAPE42, 
+          t1.ADCLIM42, 
+          t1.ADCMPD42, 
+          t1.ADCMPM42, 
+          t1.ADCMPY42, 
+          t1.ADDAYA42, 
+          t1.ADDOWN42, 
+          t1.ADDPRS42, 
+          t1.ADDRBP42, 
+          t1.ADEFRT42, 
+          t1.ADEGMC42, 
+          t1.ADEXPL42, 
+          t1.ADEZUN42, 
+          t1.ADFFRM42, 
+          t1.ADFHLP42, 
+          t1.ADGENH42, 
+          t1.ADHECR42, 
+          t1.ADHOPE42, 
+          t1.ADILCR42, 
+          t1.ADILWW42, 
+          t1.ADINSA42, 
+          t1.ADINSB42, 
+          t1.ADINST42, 
+          t1.ADINTR42, 
+          t1.ADL3MO42, 
+          t1.ADLANG42, 
+          t1.ADLHLP42, 
+          t1.ADLIST42, 
+          t1.ADMALS42, 
+          t1.ADMWLM42, 
+          t1.ADNDCR42, 
+          t1.ADNERV42, 
+          t1.ADNRGY42, 
+          t1.ADNSMK42, 
+          t1.ADOVER42, 
+          t1.ADPAIN42, 
+          t1.ADPALS42, 
+          t1.ADPRTM42, 
+          t1.ADPRX42, 
+          t1.ADPWLM42, 
+          t1.ADRESP42, 
+          t1.ADREST42, 
+          t1.ADRISK42, 
+          t1.ADRTCR42, 
+          t1.ADRTWW42, 
+          t1.ADSAD42, 
+          t1.ADSMOK42, 
+          t1.ADSOCA42, 
+          t1.ADSPEC42, 
+          t1.ADSPRF42, 
+          t1.ADTLHW42, 
+          t1.ADUPRO42, 
+          t1.ADWRTH42, 
+          t1.PHQ242, 
+          t1.HPRAP12, 
+          t1.HPRAU12, 
+          t1.HPRDE12, 
+          t1.HPRFE12, 
+          t1.HPRJA12, 
+          t1.HPRJL12, 
+          t1.HPRJU12, 
+          t1.HPRMA12, 
+          t1.HPRMY12, 
+          t1.HPRNO12, 
+          t1.HPROC12, 
+          t1.HPRSE12, 
+          t1.MDDLPR42, 
+          t1.MDDLRS42, 
+          t1.MDUNAB42, 
+          t1.MDUNPR42, 
+          t1.MDUNRS42, 
+          t1.MDDLAY42, 
+          t1.DNUNAB42, 
+          t1.DNUNPR42, 
+          t1.DNUNRS42, 
+          t1.DNDLAY42, 
+          t1.DNDLPR42, 
+          t1.DNDLRS42, 
+          t1.RTHLTH31, 
+          t1.RTHLTH42, 
+          t1.RTHLTH53, 
+          t1.ARTHAGED, 
+          t1.ARTHDX, 
+          t1.ARTHTYPE, 
+          t1.ASTHAGED, 
+          t1.ASTHDX, 
+          t1.ADHDADDX, 
+          t1.ADHDAGED, 
+          t1.DSDIA53, 
+          t1.MIAGED, 
+          t1.MIDX, 
+          t1.HIBPAGED, 
+          t1.HIBPDX, 
+          t1.LEUKAGED, 
+          t1.LEUKREMS, 
+          t1.LUNGAGED, 
+          t1.LUNGREMS, 
+          t1.LYMPAGED, 
+          t1.LYMPREMS, 
+          t1.MELAAGED, 
+          t1.MELAREMS, 
+          t1.OTHRAGED, 
+          t1.OHRTAGED, 
+          t1.OHRTDX, 
+          t1.SKDKAGED, 
+          t1.SKDKREMS, 
+          t1.SKNMAGED, 
+          t1.STRKAGED, 
+          t1.STRKDX, 
+          t1.THRTAGED, 
+          t1.THRTREMS, 
+          t1.THYRAGED, 
+          t1.THYRREMS, 
+          t1.AIDHLP31, 
+          t1.AIDHLP53, 
+          t1.SSECP12X, 
+          t1.BUSIMP12, 
+          t1.BUSNP12X, 
+          t1.BRAIAGED, 
+          t1.BRAIREMS, 
+          t1.BRSTAGED, 
+          t1.BRSTEX53, 
+          t1.BRSTREMS, 
+          t1.CABLADDR, 
+          t1.CABRAIN, 
+          t1.CABREAST, 
+          t1.CACERVIX, 
+          t1.CACOLON, 
+          t1.CALEUKEM, 
+          t1.CALUNG, 
+          t1.CALYMPH, 
+          t1.CAMELANO, 
+          t1.CANCERDX, 
+          t1.CAOTHER, 
+          t1.CAPROSTA, 
+          t1.CARECO42, 
+          t1.CASHP12X, 
+          t1.CASKINDK, 
+          t1.CASKINNM, 
+          t1.CATHROAT, 
+          t1.CATHYROD, 
+          t1.CERVAGED, 
+          t1.CERVREMS, 
+          t1.SAQ_GENH, 
+          t1.SAQ_HEALIMACT, 
+          t1.SAQ_HEALIMSTRS, 
+          t1.SAQ_ALPHYS, 
+          t1.SAQ_WORKLIM, 
+          t1.SAQ_ALMENT, 
+          t1.SAQ_WLMENT, 
+          t1.SAQ_FELTPEACE, 
+          t1.SAQ_PAINLIM, 
+          t1.SAQ_ENERGY, 
+          t1.SAQ_DOWNHEART, 
+          t1.SAQ_SOCACT, 
+          t1.Marital_Status, 
+          t1.Education_Level, 
+          t1.GOT_CARE, 
+          t1.NUMB_VISIT_MED, 
+          t1.EASY_MED_CARE, 
+          t1.HEALTH_CARE_RATING, 
+          t1.SMOKING, 
+          t1.HEALTH_STAT1, 
+          t1.HEALTH_STAT2, 
+          t1.HEALTH_STAT3, 
+          t1.FEEL_NERV, 
+          t1.FEEL_WORTHLESS, 
+          t1.FEEL_RESTLESS, 
+          t1.SAQ_ENERGY_rev, 
+          t1.SAQ_FELTPEACE_rev, 
+          t1.SAQ_GENH_rev, 
+          t1.SAQ_PAINLIM_rev, 
+          t1.SUM_SAQ_SF12, 
+          t1.SAQ2_DOCLIST, 
+          t1.SAQ2_DOCUND, 
+          t1.SAQ2_DOCRESP, 
+          t1.SAQ2_DOCTIME, 
+          t1.SAQ2_DOCSPEC, 
+          t1.SAQ2_EZUN, 
+          t1.SAQ2_DOCFOLLOW, 
+          t1.SAQ2_DOCSPEC_rev, 
+          t1.SAQ2_DocPat_SUM, 
+          /* Marry12x_Recode */
+            (CASE 
+               WHEN -7 = t1.MARRY12X THEN .
+               WHEN -9 = t1.MARRY12X THEN .
+               ELSE t1.MARRY12X
+            END) LABEL="Recoded Marry12x variable" AS Marry12x_Recode, 
+          /* EDURecode_Missing */
+            (CASE 
+               WHEN -7 = t1.EDRECODE THEN .
+               WHEN -8 = t1.EDRECODE THEN .
+               WHEN -9 = t1.EDRECODE THEN .
+               ELSE t1.EDRECODE
+            END) LABEL="Eudcation recode missing" AS EDURecode_Missing
+      FROM WORK.MEPS_FULLYR_2012_SUM2_CATE t1;
+QUIT;
+
+GOPTIONS NOACCESSIBLE;
+
+
+%LET _CLIENTTASKLABEL=;
+%LET _CLIENTPROJECTPATH=;
+%LET _CLIENTPROJECTNAME=;
+
+
+/*   START OF NODE: Marry Categorical variable   */
+%LET _CLIENTTASKLABEL='Marry Categorical variable';
+%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011315.egp';
+%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011315.egp';
+
+GOPTIONS ACCESSIBLE;
+%_eg_conditional_dropds(WORK.MEPS_FULLYR_2012_MARRY_cate);
+
+PROC SQL;
+   CREATE TABLE WORK."MEPS_FULLYR_2012_MARRY_cate"n AS 
+   SELECT /* Marry12x_Recode_cate */
+            (CASE  
+               WHEN t1.Marry12x_Recode = 1
+               THEN 2
+               WHEN t1.Marry12x_Recode = 2 or t1.Marry12x_Recode = 3 or  t1.Marry12x_Recode = 4 or t1.Marry12x_Recode = 
+            5
+               THEN 1
+            END) LABEL="Marry recoded categorical variable" AS Marry12x_Recode_cate, 
+          t1.SAQ2_DocPatRel_sumcate, 
+          t1.Quartiles_Categorical, 
+          t1.DUPERSID, 
+          t1.AGE12X, 
+          t1.SEX, 
+          t1.REGION12, 
+          t1.RACETHX, 
+          t1.MARRY12X, 
+          t1.EDUYRDEG, 
+          t1.EDRECODE, 
+          t1.UNEMP12X, 
+          t1.UNEIMP12, 
+          t1.ADAPPT42, 
+          t1.ADCAPE42, 
+          t1.ADCLIM42, 
+          t1.ADCMPD42, 
+          t1.ADCMPM42, 
+          t1.ADCMPY42, 
+          t1.ADDAYA42, 
+          t1.ADDOWN42, 
+          t1.ADDPRS42, 
+          t1.ADDRBP42, 
+          t1.ADEFRT42, 
+          t1.ADEGMC42, 
+          t1.ADEXPL42, 
+          t1.ADEZUN42, 
+          t1.ADFFRM42, 
+          t1.ADFHLP42, 
+          t1.ADGENH42, 
+          t1.ADHECR42, 
+          t1.ADHOPE42, 
+          t1.ADILCR42, 
+          t1.ADILWW42, 
+          t1.ADINSA42, 
+          t1.ADINSB42, 
+          t1.ADINST42, 
+          t1.ADINTR42, 
+          t1.ADL3MO42, 
+          t1.ADLANG42, 
+          t1.ADLHLP42, 
+          t1.ADLIST42, 
+          t1.ADMALS42, 
+          t1.ADMWLM42, 
+          t1.ADNDCR42, 
+          t1.ADNERV42, 
+          t1.ADNRGY42, 
+          t1.ADNSMK42, 
+          t1.ADOVER42, 
+          t1.ADPAIN42, 
+          t1.ADPALS42, 
+          t1.ADPRTM42, 
+          t1.ADPRX42, 
+          t1.ADPWLM42, 
+          t1.ADRESP42, 
+          t1.ADREST42, 
+          t1.ADRISK42, 
+          t1.ADRTCR42, 
+          t1.ADRTWW42, 
+          t1.ADSAD42, 
+          t1.ADSMOK42, 
+          t1.ADSOCA42, 
+          t1.ADSPEC42, 
+          t1.ADSPRF42, 
+          t1.ADTLHW42, 
+          t1.ADUPRO42, 
+          t1.ADWRTH42, 
+          t1.PHQ242, 
+          t1.HPRAP12, 
+          t1.HPRAU12, 
+          t1.HPRDE12, 
+          t1.HPRFE12, 
+          t1.HPRJA12, 
+          t1.HPRJL12, 
+          t1.HPRJU12, 
+          t1.HPRMA12, 
+          t1.HPRMY12, 
+          t1.HPRNO12, 
+          t1.HPROC12, 
+          t1.HPRSE12, 
+          t1.MDDLPR42, 
+          t1.MDDLRS42, 
+          t1.MDUNAB42, 
+          t1.MDUNPR42, 
+          t1.MDUNRS42, 
+          t1.MDDLAY42, 
+          t1.DNUNAB42, 
+          t1.DNUNPR42, 
+          t1.DNUNRS42, 
+          t1.DNDLAY42, 
+          t1.DNDLPR42, 
+          t1.DNDLRS42, 
+          t1.RTHLTH31, 
+          t1.RTHLTH42, 
+          t1.RTHLTH53, 
+          t1.ARTHAGED, 
+          t1.ARTHDX, 
+          t1.ARTHTYPE, 
+          t1.ASTHAGED, 
+          t1.ASTHDX, 
+          t1.ADHDADDX, 
+          t1.ADHDAGED, 
+          t1.DSDIA53, 
+          t1.MIAGED, 
+          t1.MIDX, 
+          t1.HIBPAGED, 
+          t1.HIBPDX, 
+          t1.LEUKAGED, 
+          t1.LEUKREMS, 
+          t1.LUNGAGED, 
+          t1.LUNGREMS, 
+          t1.LYMPAGED, 
+          t1.LYMPREMS, 
+          t1.MELAAGED, 
+          t1.MELAREMS, 
+          t1.OTHRAGED, 
+          t1.OHRTAGED, 
+          t1.OHRTDX, 
+          t1.SKDKAGED, 
+          t1.SKDKREMS, 
+          t1.SKNMAGED, 
+          t1.STRKAGED, 
+          t1.STRKDX, 
+          t1.THRTAGED, 
+          t1.THRTREMS, 
+          t1.THYRAGED, 
+          t1.THYRREMS, 
+          t1.AIDHLP31, 
+          t1.AIDHLP53, 
+          t1.SSECP12X, 
+          t1.BUSIMP12, 
+          t1.BUSNP12X, 
+          t1.BRAIAGED, 
+          t1.BRAIREMS, 
+          t1.BRSTAGED, 
+          t1.BRSTEX53, 
+          t1.BRSTREMS, 
+          t1.CABLADDR, 
+          t1.CABRAIN, 
+          t1.CABREAST, 
+          t1.CACERVIX, 
+          t1.CACOLON, 
+          t1.CALEUKEM, 
+          t1.CALUNG, 
+          t1.CALYMPH, 
+          t1.CAMELANO, 
+          t1.CANCERDX, 
+          t1.CAOTHER, 
+          t1.CAPROSTA, 
+          t1.CARECO42, 
+          t1.CASHP12X, 
+          t1.CASKINDK, 
+          t1.CASKINNM, 
+          t1.CATHROAT, 
+          t1.CATHYROD, 
+          t1.CERVAGED, 
+          t1.CERVREMS, 
+          t1.SAQ_GENH, 
+          t1.SAQ_HEALIMACT, 
+          t1.SAQ_HEALIMSTRS, 
+          t1.SAQ_ALPHYS, 
+          t1.SAQ_WORKLIM, 
+          t1.SAQ_ALMENT, 
+          t1.SAQ_WLMENT, 
+          t1.SAQ_FELTPEACE, 
+          t1.SAQ_PAINLIM, 
+          t1.SAQ_ENERGY, 
+          t1.SAQ_DOWNHEART, 
+          t1.SAQ_SOCACT, 
+          t1.Marital_Status, 
+          t1.Education_Level, 
+          t1.GOT_CARE, 
+          t1.NUMB_VISIT_MED, 
+          t1.EASY_MED_CARE, 
+          t1.HEALTH_CARE_RATING, 
+          t1.SMOKING, 
+          t1.HEALTH_STAT1, 
+          t1.HEALTH_STAT2, 
+          t1.HEALTH_STAT3, 
+          t1.FEEL_NERV, 
+          t1.FEEL_WORTHLESS, 
+          t1.FEEL_RESTLESS, 
+          t1.SAQ_ENERGY_rev, 
+          t1.SAQ_FELTPEACE_rev, 
+          t1.SAQ_GENH_rev, 
+          t1.SAQ_PAINLIM_rev, 
+          t1.SUM_SAQ_SF12, 
+          t1.SAQ2_DOCLIST, 
+          t1.SAQ2_DOCUND, 
+          t1.SAQ2_DOCRESP, 
+          t1.SAQ2_DOCTIME, 
+          t1.SAQ2_DOCSPEC, 
+          t1.SAQ2_EZUN, 
+          t1.SAQ2_DOCFOLLOW, 
+          t1.SAQ2_DOCSPEC_rev, 
+          t1.SAQ2_DocPat_SUM, 
+          t1.Marry12x_Recode, 
+          /* EDURECODE Categorical */
+            (CASE  
+               WHEN t1.EDURecode_Missing >= 0 and t1.EDURecode_Missing <= 12
+               THEN 1
+               WHEN  t1.EDURecode_Missing = 13
+               THEN 2
+               WHEN t1.EDURecode_Missing = 14
+               THEN 3
+               WHEN t1.EDURecode_Missing = 15
+               THEN 4
+               WHEN t1.EDURecode_Missing = 16
+               THEN 5
+            END) LABEL="EDURECODE Missing categorical variable" AS 'EDURECODE Categorical'n
+      FROM WORK.MEPS_FULLYR_2012_MARRY_EDU t1;
+QUIT;
+
+GOPTIONS NOACCESSIBLE;
+
+
+%LET _CLIENTTASKLABEL=;
+%LET _CLIENTPROJECTPATH=;
+%LET _CLIENTPROJECTNAME=;
+
+
+/*   START OF NODE: Assign Project Library (MYDATA)   */
+%LET _CLIENTTASKLABEL='Assign Project Library (MYDATA)';
+%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011315.egp';
+%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011315.egp';
+
+GOPTIONS ACCESSIBLE;
+LIBNAME MYDATA BASE "P:\QAC\qac200\students\jwoo" ;
 
 GOPTIONS NOACCESSIBLE;
 %LET _CLIENTTASKLABEL=;
@@ -1224,31 +2916,647 @@ GOPTIONS NOACCESSIBLE;
 %LET _CLIENTPROJECTNAME=;
 
 
-/*   START OF NODE: List Data1   */
-%LET _CLIENTTASKLABEL='List Data1';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
+/*   START OF NODE: Create INFULLYR=1   */
+LIBNAME EC100036 "P:\QAC\qac200\students\jwoo";
+
+
+%LET _CLIENTTASKLABEL='Create INFULLYR=1';
+%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011315.egp';
+%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011315.egp';
+
+GOPTIONS ACCESSIBLE;
+%_eg_conditional_dropds(WORK.MEPS_FULLYR_2012_A5DAT);
+
+PROC SQL;
+   CREATE TABLE WORK."MEPS_FULLYR_2012_A5DAT"n AS 
+   SELECT t1.Marry12x_Recode_cate, 
+          t1.SAQ2_DocPatRel_sumcate, 
+          t1.Quartiles_Categorical, 
+          t1.DUPERSID, 
+          t1.AGE12X, 
+          t1.SEX, 
+          t1.REGION12, 
+          t1.RACETHX, 
+          t1.MARRY12X, 
+          t1.EDUYRDEG, 
+          t1.EDRECODE, 
+          t1.UNEMP12X, 
+          t1.UNEIMP12, 
+          t1.ADAPPT42, 
+          t1.ADCAPE42, 
+          t1.ADCLIM42, 
+          t1.ADCMPD42, 
+          t1.ADCMPM42, 
+          t1.ADCMPY42, 
+          t1.ADDAYA42, 
+          t1.ADDOWN42, 
+          t1.ADDPRS42, 
+          t1.ADDRBP42, 
+          t1.ADEFRT42, 
+          t1.ADEGMC42, 
+          t1.ADEXPL42, 
+          t1.ADEZUN42, 
+          t1.ADFFRM42, 
+          t1.ADFHLP42, 
+          t1.ADGENH42, 
+          t1.ADHECR42, 
+          t1.ADHOPE42, 
+          t1.ADILCR42, 
+          t1.ADILWW42, 
+          t1.ADINSA42, 
+          t1.ADINSB42, 
+          t1.ADINST42, 
+          t1.ADINTR42, 
+          t1.ADL3MO42, 
+          t1.ADLANG42, 
+          t1.ADLHLP42, 
+          t1.ADLIST42, 
+          t1.ADMALS42, 
+          t1.ADMWLM42, 
+          t1.ADNDCR42, 
+          t1.ADNERV42, 
+          t1.ADNRGY42, 
+          t1.ADNSMK42, 
+          t1.ADOVER42, 
+          t1.ADPAIN42, 
+          t1.ADPALS42, 
+          t1.ADPRTM42, 
+          t1.ADPRX42, 
+          t1.ADPWLM42, 
+          t1.ADRESP42, 
+          t1.ADREST42, 
+          t1.ADRISK42, 
+          t1.ADRTCR42, 
+          t1.ADRTWW42, 
+          t1.ADSAD42, 
+          t1.ADSMOK42, 
+          t1.ADSOCA42, 
+          t1.ADSPEC42, 
+          t1.ADSPRF42, 
+          t1.ADTLHW42, 
+          t1.ADUPRO42, 
+          t1.ADWRTH42, 
+          t1.PHQ242, 
+          t1.HPRAP12, 
+          t1.HPRAU12, 
+          t1.HPRDE12, 
+          t1.HPRFE12, 
+          t1.HPRJA12, 
+          t1.HPRJL12, 
+          t1.HPRJU12, 
+          t1.HPRMA12, 
+          t1.HPRMY12, 
+          t1.HPRNO12, 
+          t1.HPROC12, 
+          t1.HPRSE12, 
+          t1.MDDLPR42, 
+          t1.MDDLRS42, 
+          t1.MDUNAB42, 
+          t1.MDUNPR42, 
+          t1.MDUNRS42, 
+          t1.MDDLAY42, 
+          t1.DNUNAB42, 
+          t1.DNUNPR42, 
+          t1.DNUNRS42, 
+          t1.DNDLAY42, 
+          t1.DNDLPR42, 
+          t1.DNDLRS42, 
+          t1.RTHLTH31, 
+          t1.RTHLTH42, 
+          t1.RTHLTH53, 
+          t1.ARTHAGED, 
+          t1.ARTHDX, 
+          t1.ARTHTYPE, 
+          t1.ASTHAGED, 
+          t1.ASTHDX, 
+          t1.ADHDADDX, 
+          t1.ADHDAGED, 
+          t1.DSDIA53, 
+          t1.MIAGED, 
+          t1.MIDX, 
+          t1.HIBPAGED, 
+          t1.HIBPDX, 
+          t1.LEUKAGED, 
+          t1.LEUKREMS, 
+          t1.LUNGAGED, 
+          t1.LUNGREMS, 
+          t1.LYMPAGED, 
+          t1.LYMPREMS, 
+          t1.MELAAGED, 
+          t1.MELAREMS, 
+          t1.OTHRAGED, 
+          t1.OHRTAGED, 
+          t1.OHRTDX, 
+          t1.SKDKAGED, 
+          t1.SKDKREMS, 
+          t1.SKNMAGED, 
+          t1.STRKAGED, 
+          t1.STRKDX, 
+          t1.THRTAGED, 
+          t1.THRTREMS, 
+          t1.THYRAGED, 
+          t1.THYRREMS, 
+          t1.AIDHLP31, 
+          t1.AIDHLP53, 
+          t1.SSECP12X, 
+          t1.BUSIMP12, 
+          t1.BUSNP12X, 
+          t1.BRAIAGED, 
+          t1.BRAIREMS, 
+          t1.BRSTAGED, 
+          t1.BRSTEX53, 
+          t1.BRSTREMS, 
+          t1.CABLADDR, 
+          t1.CABRAIN, 
+          t1.CABREAST, 
+          t1.CACERVIX, 
+          t1.CACOLON, 
+          t1.CALEUKEM, 
+          t1.CALUNG, 
+          t1.CALYMPH, 
+          t1.CAMELANO, 
+          t1.CANCERDX, 
+          t1.CAOTHER, 
+          t1.CAPROSTA, 
+          t1.CARECO42, 
+          t1.CASHP12X, 
+          t1.CASKINDK, 
+          t1.CASKINNM, 
+          t1.CATHROAT, 
+          t1.CATHYROD, 
+          t1.CERVAGED, 
+          t1.CERVREMS, 
+          t1.SAQ_GENH, 
+          t1.SAQ_HEALIMACT, 
+          t1.SAQ_HEALIMSTRS, 
+          t1.SAQ_ALPHYS, 
+          t1.SAQ_WORKLIM, 
+          t1.SAQ_ALMENT, 
+          t1.SAQ_WLMENT, 
+          t1.SAQ_FELTPEACE, 
+          t1.SAQ_PAINLIM, 
+          t1.SAQ_ENERGY, 
+          t1.SAQ_DOWNHEART, 
+          t1.SAQ_SOCACT, 
+          t1.Marital_Status, 
+          t1.Education_Level, 
+          t1.GOT_CARE, 
+          t1.NUMB_VISIT_MED, 
+          t1.EASY_MED_CARE, 
+          t1.HEALTH_CARE_RATING, 
+          t1.SMOKING, 
+          t1.HEALTH_STAT1, 
+          t1.HEALTH_STAT2, 
+          t1.HEALTH_STAT3, 
+          t1.FEEL_NERV, 
+          t1.FEEL_WORTHLESS, 
+          t1.FEEL_RESTLESS, 
+          t1.SAQ_ENERGY_rev, 
+          t1.SAQ_FELTPEACE_rev, 
+          t1.SAQ_GENH_rev, 
+          t1.SAQ_PAINLIM_rev, 
+          t1.SUM_SAQ_SF12, 
+          t1.SAQ2_DOCLIST, 
+          t1.SAQ2_DOCUND, 
+          t1.SAQ2_DOCRESP, 
+          t1.SAQ2_DOCTIME, 
+          t1.SAQ2_DOCSPEC, 
+          t1.SAQ2_EZUN, 
+          t1.SAQ2_DOCFOLLOW, 
+          t1.SAQ2_DOCSPEC_rev, 
+          t1.SAQ2_DocPat_SUM, 
+          t1.Marry12x_Recode, 
+          t1.'EDURECODE Categorical'n, 
+          /* INFULLYR */
+            (1) AS INFULLYR
+      FROM EC100036.meps_fullyr_2012_A5data t1;
+QUIT;
+
+GOPTIONS NOACCESSIBLE;
+
+
+%LET _CLIENTTASKLABEL=;
+%LET _CLIENTPROJECTPATH=;
+%LET _CLIENTPROJECTNAME=;
+
+
+/*   START OF NODE: Creat INER=1   */
+LIBNAME EC100038 "P:\QAC\qac200\Data\MEPS";
+
+
+%LET _CLIENTTASKLABEL='Creat INER=1';
+%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011315.egp';
+%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011315.egp';
+
+GOPTIONS ACCESSIBLE;
+%_eg_conditional_dropds(WORK.MEPS_ER_2012_er2012);
+
+PROC SQL;
+   CREATE TABLE WORK."MEPS_ER_2012_er2012"n AS 
+   SELECT t1.DUID, 
+          t1.PID, 
+          t1.DUPERSID, 
+          t1.EVNTIDX, 
+          t1.EVENTRN, 
+          t1.ERHEVIDX, 
+          t1.FFEEIDX, 
+          t1.PANEL, 
+          t1.MPCDATA, 
+          t1.ERDATEYR, 
+          t1.ERDATEMM, 
+          t1.ERDATEDD, 
+          t1.SEEDOC, 
+          t1.VSTCTGRY, 
+          t1.VSTRELCN, 
+          t1.LABTEST, 
+          t1.SONOGRAM, 
+          t1.XRAYS, 
+          t1.MAMMOG, 
+          t1.MRI, 
+          t1.EKG, 
+          t1.EEG, 
+          t1.RCVVAC, 
+          t1.ANESTH, 
+          t1.THRTSWAB, 
+          t1.OTHSVCE, 
+          t1.SURGPROC, 
+          t1.MEDPRESC, 
+          t1.ERICD1X, 
+          t1.ERICD2X, 
+          t1.ERICD3X, 
+          t1.ERPRO1X, 
+          t1.ERCCC1X, 
+          t1.ERCCC2X, 
+          t1.ERCCC3X, 
+          t1.FFERTYPE, 
+          t1.FFBEF12, 
+          t1.ERXP12X, 
+          t1.ERTC12X, 
+          t1.ERFSF12X, 
+          t1.ERFMR12X, 
+          t1.ERFMD12X, 
+          t1.ERFPV12X, 
+          t1.ERFVA12X, 
+          t1.ERFTR12X, 
+          t1.ERFOF12X, 
+          t1.ERFSL12X, 
+          t1.ERFWC12X, 
+          t1.ERFOR12X, 
+          t1.ERFOU12X, 
+          t1.ERFOT12X, 
+          t1.ERFXP12X, 
+          t1.ERFTC12X, 
+          t1.ERDSF12X, 
+          t1.ERDMR12X, 
+          t1.ERDMD12X, 
+          t1.ERDPV12X, 
+          t1.ERDVA12X, 
+          t1.ERDTR12X, 
+          t1.ERDOF12X, 
+          t1.ERDSL12X, 
+          t1.ERDWC12X, 
+          t1.ERDOR12X, 
+          t1.ERDOU12X, 
+          t1.ERDOT12X, 
+          t1.ERDXP12X, 
+          t1.ERDTC12X, 
+          t1.IMPFLAG, 
+          t1.PERWT12F, 
+          t1.VARSTR, 
+          t1.VARPSU, 
+          /* INER */
+            (1) AS INER
+      FROM EC100038.meps_er_2012 t1;
+QUIT;
+
+GOPTIONS NOACCESSIBLE;
+
+
+%LET _CLIENTTASKLABEL=;
+%LET _CLIENTPROJECTPATH=;
+%LET _CLIENTPROJECTNAME=;
+
+
+/*   START OF NODE: INNER JOIN for FULLYR and ER   */
+%LET _CLIENTTASKLABEL='INNER JOIN for FULLYR and ER';
+%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011315.egp';
+%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011315.egp';
+
+GOPTIONS ACCESSIBLE;
+%_eg_conditional_dropds(MYDATA.MEPS_FULLYR_AND_ER);
+
+PROC SQL;
+   CREATE TABLE MYDATA.MEPS_FULLYR_AND_ER(label="MEPS_FULLYR_AND_ER") AS 
+   SELECT t1.Marry12x_Recode_cate, 
+          t1.SAQ2_DocPatRel_sumcate, 
+          t1.Quartiles_Categorical, 
+          t1.DUPERSID, 
+          t1.AGE12X, 
+          t1.SEX, 
+          t1.REGION12, 
+          t1.RACETHX, 
+          t1.MARRY12X, 
+          t1.EDUYRDEG, 
+          t1.EDRECODE, 
+          t1.UNEMP12X, 
+          t1.UNEIMP12, 
+          t1.ADAPPT42, 
+          t1.ADCAPE42, 
+          t1.ADCLIM42, 
+          t1.ADCMPD42, 
+          t1.ADCMPM42, 
+          t1.ADCMPY42, 
+          t1.ADDAYA42, 
+          t1.ADDOWN42, 
+          t1.ADDPRS42, 
+          t1.ADDRBP42, 
+          t1.ADEFRT42, 
+          t1.ADEGMC42, 
+          t1.ADEXPL42, 
+          t1.ADEZUN42, 
+          t1.ADFFRM42, 
+          t1.ADFHLP42, 
+          t1.ADGENH42, 
+          t1.ADHECR42, 
+          t1.ADHOPE42, 
+          t1.ADILCR42, 
+          t1.ADILWW42, 
+          t1.ADINSA42, 
+          t1.ADINSB42, 
+          t1.ADINST42, 
+          t1.ADINTR42, 
+          t1.ADL3MO42, 
+          t1.ADLANG42, 
+          t1.ADLHLP42, 
+          t1.ADLIST42, 
+          t1.ADMALS42, 
+          t1.ADMWLM42, 
+          t1.ADNDCR42, 
+          t1.ADNERV42, 
+          t1.ADNRGY42, 
+          t1.ADNSMK42, 
+          t1.ADOVER42, 
+          t1.ADPAIN42, 
+          t1.ADPALS42, 
+          t1.ADPRTM42, 
+          t1.ADPRX42, 
+          t1.ADPWLM42, 
+          t1.ADRESP42, 
+          t1.ADREST42, 
+          t1.ADRISK42, 
+          t1.ADRTCR42, 
+          t1.ADRTWW42, 
+          t1.ADSAD42, 
+          t1.ADSMOK42, 
+          t1.ADSOCA42, 
+          t1.ADSPEC42, 
+          t1.ADSPRF42, 
+          t1.ADTLHW42, 
+          t1.ADUPRO42, 
+          t1.ADWRTH42, 
+          t1.PHQ242, 
+          t1.HPRAP12, 
+          t1.HPRAU12, 
+          t1.HPRDE12, 
+          t1.HPRFE12, 
+          t1.HPRJA12, 
+          t1.HPRJL12, 
+          t1.HPRJU12, 
+          t1.HPRMA12, 
+          t1.HPRMY12, 
+          t1.HPRNO12, 
+          t1.HPROC12, 
+          t1.HPRSE12, 
+          t1.MDDLPR42, 
+          t1.MDDLRS42, 
+          t1.MDUNAB42, 
+          t1.MDUNPR42, 
+          t1.MDUNRS42, 
+          t1.MDDLAY42, 
+          t1.DNUNAB42, 
+          t1.DNUNPR42, 
+          t1.DNUNRS42, 
+          t1.DNDLAY42, 
+          t1.DNDLPR42, 
+          t1.DNDLRS42, 
+          t1.RTHLTH31, 
+          t1.RTHLTH42, 
+          t1.RTHLTH53, 
+          t1.ARTHAGED, 
+          t1.ARTHDX, 
+          t1.ARTHTYPE, 
+          t1.ASTHAGED, 
+          t1.ASTHDX, 
+          t1.ADHDADDX, 
+          t1.ADHDAGED, 
+          t1.DSDIA53, 
+          t1.MIAGED, 
+          t1.MIDX, 
+          t1.HIBPAGED, 
+          t1.HIBPDX, 
+          t1.LEUKAGED, 
+          t1.LEUKREMS, 
+          t1.LUNGAGED, 
+          t1.LUNGREMS, 
+          t1.LYMPAGED, 
+          t1.LYMPREMS, 
+          t1.MELAAGED, 
+          t1.MELAREMS, 
+          t1.OTHRAGED, 
+          t1.OHRTAGED, 
+          t1.OHRTDX, 
+          t1.SKDKAGED, 
+          t1.SKDKREMS, 
+          t1.SKNMAGED, 
+          t1.STRKAGED, 
+          t1.STRKDX, 
+          t1.THRTAGED, 
+          t1.THRTREMS, 
+          t1.THYRAGED, 
+          t1.THYRREMS, 
+          t1.AIDHLP31, 
+          t1.AIDHLP53, 
+          t1.SSECP12X, 
+          t1.BUSIMP12, 
+          t1.BUSNP12X, 
+          t1.BRAIAGED, 
+          t1.BRAIREMS, 
+          t1.BRSTAGED, 
+          t1.BRSTEX53, 
+          t1.BRSTREMS, 
+          t1.CABLADDR, 
+          t1.CABRAIN, 
+          t1.CABREAST, 
+          t1.CACERVIX, 
+          t1.CACOLON, 
+          t1.CALEUKEM, 
+          t1.CALUNG, 
+          t1.CALYMPH, 
+          t1.CAMELANO, 
+          t1.CANCERDX, 
+          t1.CAOTHER, 
+          t1.CAPROSTA, 
+          t1.CARECO42, 
+          t1.CASHP12X, 
+          t1.CASKINDK, 
+          t1.CASKINNM, 
+          t1.CATHROAT, 
+          t1.CATHYROD, 
+          t1.CERVAGED, 
+          t1.CERVREMS, 
+          t1.SAQ_GENH, 
+          t1.SAQ_HEALIMACT, 
+          t1.SAQ_HEALIMSTRS, 
+          t1.SAQ_ALPHYS, 
+          t1.SAQ_WORKLIM, 
+          t1.SAQ_ALMENT, 
+          t1.SAQ_WLMENT, 
+          t1.SAQ_FELTPEACE, 
+          t1.SAQ_PAINLIM, 
+          t1.SAQ_ENERGY, 
+          t1.SAQ_DOWNHEART, 
+          t1.SAQ_SOCACT, 
+          t1.Marital_Status, 
+          t1.Education_Level, 
+          t1.GOT_CARE, 
+          t1.NUMB_VISIT_MED, 
+          t1.EASY_MED_CARE, 
+          t1.HEALTH_CARE_RATING, 
+          t1.SMOKING, 
+          t1.HEALTH_STAT1, 
+          t1.HEALTH_STAT2, 
+          t1.HEALTH_STAT3, 
+          t1.FEEL_NERV, 
+          t1.FEEL_WORTHLESS, 
+          t1.FEEL_RESTLESS, 
+          t1.SAQ_ENERGY_rev, 
+          t1.SAQ_FELTPEACE_rev, 
+          t1.SAQ_GENH_rev, 
+          t1.SAQ_PAINLIM_rev, 
+          t1.SUM_SAQ_SF12, 
+          t1.SAQ2_DOCLIST, 
+          t1.SAQ2_DOCUND, 
+          t1.SAQ2_DOCRESP, 
+          t1.SAQ2_DOCTIME, 
+          t1.SAQ2_DOCSPEC, 
+          t1.SAQ2_EZUN, 
+          t1.SAQ2_DOCFOLLOW, 
+          t1.SAQ2_DOCSPEC_rev, 
+          t1.SAQ2_DocPat_SUM, 
+          t1.Marry12x_Recode, 
+          t1.'EDURECODE Categorical'n, 
+          t1.INFULLYR, 
+          t2.DUID, 
+          t2.PID, 
+          t2.DUPERSID AS DUPERSID1, 
+          t2.EVNTIDX, 
+          t2.EVENTRN, 
+          t2.ERHEVIDX, 
+          t2.FFEEIDX, 
+          t2.PANEL, 
+          t2.MPCDATA, 
+          t2.ERDATEYR, 
+          t2.ERDATEMM, 
+          t2.ERDATEDD, 
+          t2.SEEDOC, 
+          t2.VSTCTGRY, 
+          t2.VSTRELCN, 
+          t2.LABTEST, 
+          t2.SONOGRAM, 
+          t2.XRAYS, 
+          t2.MAMMOG, 
+          t2.MRI, 
+          t2.EKG, 
+          t2.EEG, 
+          t2.RCVVAC, 
+          t2.ANESTH, 
+          t2.THRTSWAB, 
+          t2.OTHSVCE, 
+          t2.SURGPROC, 
+          t2.MEDPRESC, 
+          t2.ERICD1X, 
+          t2.ERICD2X, 
+          t2.ERICD3X, 
+          t2.ERPRO1X, 
+          t2.ERCCC1X, 
+          t2.ERCCC2X, 
+          t2.ERCCC3X, 
+          t2.FFERTYPE, 
+          t2.FFBEF12, 
+          t2.ERXP12X, 
+          t2.ERTC12X, 
+          t2.ERFSF12X, 
+          t2.ERFMR12X, 
+          t2.ERFMD12X, 
+          t2.ERFPV12X, 
+          t2.ERFVA12X, 
+          t2.ERFTR12X, 
+          t2.ERFOF12X, 
+          t2.ERFSL12X, 
+          t2.ERFWC12X, 
+          t2.ERFOR12X, 
+          t2.ERFOU12X, 
+          t2.ERFOT12X, 
+          t2.ERFXP12X, 
+          t2.ERFTC12X, 
+          t2.ERDSF12X, 
+          t2.ERDMR12X, 
+          t2.ERDMD12X, 
+          t2.ERDPV12X, 
+          t2.ERDVA12X, 
+          t2.ERDTR12X, 
+          t2.ERDOF12X, 
+          t2.ERDSL12X, 
+          t2.ERDWC12X, 
+          t2.ERDOR12X, 
+          t2.ERDOU12X, 
+          t2.ERDOT12X, 
+          t2.ERDXP12X, 
+          t2.ERDTC12X, 
+          t2.IMPFLAG, 
+          t2.PERWT12F, 
+          t2.VARSTR, 
+          t2.VARPSU, 
+          t2.INER
+      FROM WORK.MEPS_FULLYR_2012_A5DAT t1
+           FULL JOIN WORK.MEPS_ER_2012_ER2012 t2 ON (t1.DUPERSID = t2.DUPERSID)
+      WHERE t2.INER = 1 AND t1.INFULLYR = 1;
+QUIT;
+
+GOPTIONS NOACCESSIBLE;
+
+
+
+%LET _CLIENTTASKLABEL=;
+%LET _CLIENTPROJECTPATH=;
+%LET _CLIENTPROJECTNAME=;
+
+
+/*   START OF NODE: List Data   */
+%LET _CLIENTTASKLABEL='List Data';
+%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011315.egp';
+%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011315.egp';
 
 GOPTIONS ACCESSIBLE;
 /* -------------------------------------------------------------------
    Code generated by SAS Task
 
-   Generated on: Monday, January 12, 2015 at 8:31:10 PM
-   By task: List Data1
+   Generated on: Tuesday, January 13, 2015 at 4:44:53 PM
+   By task: List Data
 
-   Input Data: Local:WORK.CHECK_2_SUM
+   Input Data: Local:MYDATA.MEPS_FULLYR_AND_ER
    Server:  Local
    ------------------------------------------------------------------- */
 
 %_eg_conditional_dropds(WORK.SORTTempTableSorted);
 /* -------------------------------------------------------------------
-   Sort data set Local:WORK.CHECK_2_SUM
+   Sort data set Local:MYDATA.MEPS_FULLYR_AND_ER
    ------------------------------------------------------------------- */
 
 PROC SQL;
 	CREATE VIEW WORK.SORTTempTableSorted AS
-		SELECT T.SAQ_ENERGY_rev, T.SAQ_FELTPEACE_rev, T.SAQ_GENH_rev, T.SAQ_PAINLIM_rev, T.SAQ_HEALIMACT, T.SAQ_HEALIMSTRS, T.SAQ_ALPHYS, T.SAQ_WORKLIM, T.SAQ_DOWNHEART, T.SAQ_SOCACT, T.SAQ_ALMENT, T.SAQ_WLMENT
-	FROM WORK.CHECK_2_SUM as T
+		SELECT T.INER, T.DUPERSID1, T.DUPERSID
+	FROM MYDATA.MEPS_FULLYR_AND_ER as T
 ;
 QUIT;
 TITLE;
@@ -1257,10 +3565,11 @@ FOOTNOTE;
 FOOTNOTE1 "Generated by the SAS System (&_SASSERVERNAME, &SYSSCPL) on %TRIM(%QSYSFUNC(DATE(), NLDATE20.)) at %TRIM(%SYSFUNC(TIME(), TIMEAMPM12.))";
 
 PROC PRINT DATA=WORK.SORTTempTableSorted
+	(OBS=100)
 	OBS="Row number"
 	LABEL
 	;
-	VAR SAQ_ENERGY_rev SAQ_FELTPEACE_rev SAQ_GENH_rev SAQ_PAINLIM_rev SAQ_HEALIMACT SAQ_HEALIMSTRS SAQ_ALPHYS SAQ_WORKLIM SAQ_DOWNHEART SAQ_SOCACT SAQ_ALMENT SAQ_WLMENT;
+	VAR INER DUPERSID1 DUPERSID;
 RUN;
 /* -------------------------------------------------------------------
    End of task code.
@@ -1276,38 +3585,1253 @@ GOPTIONS NOACCESSIBLE;
 %LET _CLIENTPROJECTNAME=;
 
 
-/*   START OF NODE: Summary Statistics   */
-%LET _CLIENTTASKLABEL='Summary Statistics';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
+/*   START OF NODE: Data Set Attributes   */
+%LET _CLIENTTASKLABEL='Data Set Attributes';
+%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011315.egp';
+%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011315.egp';
 
 GOPTIONS ACCESSIBLE;
 /* -------------------------------------------------------------------
    Code generated by SAS Task
 
-   Generated on: Monday, January 12, 2015 at 8:31:00 PM
-   By task: Summary Statistics
+   Generated on: Tuesday, January 13, 2015 at 4:44:53 PM
+   By task: Data Set Attributes
 
-   Input Data: Local:WORK.MEPS_FULLYR_2012_REVER_SUM
+   Input Data: Local:MYDATA.MEPS_FULLYR_AND_ER
+   Server:  Local
+   ------------------------------------------------------------------- */
+
+%_eg_conditional_dropds(WORK.CONTContentsForMEPS_FULLYR_AND_E);
+TITLE;
+FOOTNOTE;
+FOOTNOTE1 "Generated by the SAS System (&_SASSERVERNAME, &SYSSCPL) on %TRIM(%QSYSFUNC(DATE(), NLDATE20.)) at %TRIM(%SYSFUNC(TIME(), TIMEAMPM12.))";
+PROC FORMAT;
+   VALUE _EG_VARTYPE 1="Numeric" 2="Character" OTHER="unknown";
+RUN;
+
+PROC DATASETS NOLIST NODETAILS; 
+   CONTENTS DATA=MYDATA.MEPS_FULLYR_AND_ER OUT=WORK.SUCOUT1;
+
+RUN;
+
+DATA WORK.CONTContentsForMEPS_FULLYR_AND_E(LABEL="Contents Details for MEPS_FULLYR_AND_ER");
+   SET WORK.SUCOUT1;
+RUN;
+
+PROC DELETE DATA=WORK.SUCOUT1;
+RUN;
+
+%LET _LINESIZE=%SYSFUNC(GETOPTION(LINESIZE));
+
+PROC SQL;
+CREATE VIEW WORK.SCVIEW AS 
+	SELECT DISTINCT memname LABEL="Table Name", 
+			memlabel LABEL="Label", 
+			memtype LABEL="Type", 
+			crdate LABEL="Date Created", 
+			modate LABEL="Date Modified", 
+			nobs LABEL="Number of Obs.", 
+			charset LABEL="Char. Set", 
+			protect LABEL="Password Protected", 
+			typemem LABEL="Data Set Type" FROM WORK.CONTContentsForMEPS_FULLYR_AND_E
+	ORDER BY memname ; 
+
+CREATE TABLE WORK.SCTABLE AS
+	SELECT * FROM WORK.SCVIEW
+		WHERE memname='MEPS_FULLYR_AND_ER';
+QUIT;
+
+TITLE "Tables on &_SASSERVERNAME"; 
+PROC REPORT DATA=WORK.SCTABLE; 
+   DEFINE  MEMLABEL / DISPLAY WIDTH=&_LINESIZE; 
+   COLUMN memname memlabel memtype crdate modate nobs charset protect typemem; 
+RUN;QUIT;
+
+PROC SORT DATA=WORK.CONTContentsForMEPS_FULLYR_AND_E OUT=WORK.CONTContentsForMEPS_FULLYR_AND_E;
+   BY memname name;
+RUN;
+
+OPTIONS NOBYLINE;
+TITLE 'Variables in Table: #BYVAL(memname)'; 
+
+PROC SQL;
+DROP TABLE WORK.SCTABLE;
+CREATE TABLE WORK.SCTABLE AS
+	SELECT * FROM WORK.CONTContentsForMEPS_FULLYR_AND_E
+		WHERE memname='MEPS_FULLYR_AND_ER';
+QUIT;
+
+PROC REPORT DATA=WORK.SCTABLE NOWINDOWS; 
+   FORMAT TYPE _EG_VARTYPE.; 
+   DEFINE LABEL / DISPLAY WIDTH=&_LINESIZE; 
+   LABEL NAME="Name" LABEL="Label" TYPE="Type" LENGTH="Length" INFORMAT="Informat" FORMAT="Format"; 
+   BY memname NOTSORTED;  
+   COLUMN name varnum type format label length;  
+ QUIT;  
+
+PROC SQL;
+	DROP TABLE WORK.SCTABLE;
+	DROP VIEW WORK.SCVIEW;
+QUIT;
+
+PROC CATALOG CATALOG=WORK.FORMATS;
+   DELETE _EG_VARTYPE / ENTRYTYPE=FORMAT;
+RUN;
+OPTIONS BYLINE;
+/* -------------------------------------------------------------------
+   End of task code.
+   ------------------------------------------------------------------- */
+RUN; QUIT;
+TITLE; FOOTNOTE;
+
+
+GOPTIONS NOACCESSIBLE;
+%LET _CLIENTTASKLABEL=;
+%LET _CLIENTPROJECTPATH=;
+%LET _CLIENTPROJECTNAME=;
+
+
+/*   START OF NODE: Query Builder   */
+%LET _CLIENTTASKLABEL='Query Builder';
+%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011315.egp';
+%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011315.egp';
+
+GOPTIONS ACCESSIBLE;
+%_eg_conditional_dropds(WORK.QUERY_FOR_MEPS_FULLYR_AND_ER);
+
+PROC SQL;
+   CREATE TABLE WORK.QUERY_FOR_MEPS_FULLYR_AND_ER AS 
+   SELECT t1.Marry12x_Recode_cate, 
+          t1.SAQ2_DocPatRel_sumcate, 
+          t1.Quartiles_Categorical, 
+          t1.DUPERSID, 
+          t1.AGE12X, 
+          t1.SEX, 
+          t1.REGION12, 
+          t1.RACETHX, 
+          t1.MARRY12X, 
+          t1.EDUYRDEG, 
+          t1.EDRECODE, 
+          t1.UNEMP12X, 
+          t1.UNEIMP12, 
+          t1.ADAPPT42, 
+          t1.ADCAPE42, 
+          t1.ADCLIM42, 
+          t1.ADCMPD42, 
+          t1.ADCMPM42, 
+          t1.ADCMPY42, 
+          t1.ADDAYA42, 
+          t1.ADDOWN42, 
+          t1.ADDPRS42, 
+          t1.ADDRBP42, 
+          t1.ADEFRT42, 
+          t1.ADEGMC42, 
+          t1.ADEXPL42, 
+          t1.ADEZUN42, 
+          t1.ADFFRM42, 
+          t1.ADFHLP42, 
+          t1.ADGENH42, 
+          t1.ADHECR42, 
+          t1.ADHOPE42, 
+          t1.ADILCR42, 
+          t1.ADILWW42, 
+          t1.ADINSA42, 
+          t1.ADINSB42, 
+          t1.ADINST42, 
+          t1.ADINTR42, 
+          t1.ADL3MO42, 
+          t1.ADLANG42, 
+          t1.ADLHLP42, 
+          t1.ADLIST42, 
+          t1.ADMALS42, 
+          t1.ADMWLM42, 
+          t1.ADNDCR42, 
+          t1.ADNERV42, 
+          t1.ADNRGY42, 
+          t1.ADNSMK42, 
+          t1.ADOVER42, 
+          t1.ADPAIN42, 
+          t1.ADPALS42, 
+          t1.ADPRTM42, 
+          t1.ADPRX42, 
+          t1.ADPWLM42, 
+          t1.ADRESP42, 
+          t1.ADREST42, 
+          t1.ADRISK42, 
+          t1.ADRTCR42, 
+          t1.ADRTWW42, 
+          t1.ADSAD42, 
+          t1.ADSMOK42, 
+          t1.ADSOCA42, 
+          t1.ADSPEC42, 
+          t1.ADSPRF42, 
+          t1.ADTLHW42, 
+          t1.ADUPRO42, 
+          t1.ADWRTH42, 
+          t1.PHQ242, 
+          t1.HPRAP12, 
+          t1.HPRAU12, 
+          t1.HPRDE12, 
+          t1.HPRFE12, 
+          t1.HPRJA12, 
+          t1.HPRJL12, 
+          t1.HPRJU12, 
+          t1.HPRMA12, 
+          t1.HPRMY12, 
+          t1.HPRNO12, 
+          t1.HPROC12, 
+          t1.HPRSE12, 
+          t1.MDDLPR42, 
+          t1.MDDLRS42, 
+          t1.MDUNAB42, 
+          t1.MDUNPR42, 
+          t1.MDUNRS42, 
+          t1.MDDLAY42, 
+          t1.DNUNAB42, 
+          t1.DNUNPR42, 
+          t1.DNUNRS42, 
+          t1.DNDLAY42, 
+          t1.DNDLPR42, 
+          t1.DNDLRS42, 
+          t1.RTHLTH31, 
+          t1.RTHLTH42, 
+          t1.RTHLTH53, 
+          t1.ARTHAGED, 
+          t1.ARTHDX, 
+          t1.ARTHTYPE, 
+          t1.ASTHAGED, 
+          t1.ASTHDX, 
+          t1.ADHDADDX, 
+          t1.ADHDAGED, 
+          t1.DSDIA53, 
+          t1.MIAGED, 
+          t1.MIDX, 
+          t1.HIBPAGED, 
+          t1.HIBPDX, 
+          t1.LEUKAGED, 
+          t1.LEUKREMS, 
+          t1.LUNGAGED, 
+          t1.LUNGREMS, 
+          t1.LYMPAGED, 
+          t1.LYMPREMS, 
+          t1.MELAAGED, 
+          t1.MELAREMS, 
+          t1.OTHRAGED, 
+          t1.OHRTAGED, 
+          t1.OHRTDX, 
+          t1.SKDKAGED, 
+          t1.SKDKREMS, 
+          t1.SKNMAGED, 
+          t1.STRKAGED, 
+          t1.STRKDX, 
+          t1.THRTAGED, 
+          t1.THRTREMS, 
+          t1.THYRAGED, 
+          t1.THYRREMS, 
+          t1.AIDHLP31, 
+          t1.AIDHLP53, 
+          t1.SSECP12X, 
+          t1.BUSIMP12, 
+          t1.BUSNP12X, 
+          t1.BRAIAGED, 
+          t1.BRAIREMS, 
+          t1.BRSTAGED, 
+          t1.BRSTEX53, 
+          t1.BRSTREMS, 
+          t1.CABLADDR, 
+          t1.CABRAIN, 
+          t1.CABREAST, 
+          t1.CACERVIX, 
+          t1.CACOLON, 
+          t1.CALEUKEM, 
+          t1.CALUNG, 
+          t1.CALYMPH, 
+          t1.CAMELANO, 
+          t1.CANCERDX, 
+          t1.CAOTHER, 
+          t1.CAPROSTA, 
+          t1.CARECO42, 
+          t1.CASHP12X, 
+          t1.CASKINDK, 
+          t1.CASKINNM, 
+          t1.CATHROAT, 
+          t1.CATHYROD, 
+          t1.CERVAGED, 
+          t1.CERVREMS, 
+          t1.SAQ_GENH, 
+          t1.SAQ_HEALIMACT, 
+          t1.SAQ_HEALIMSTRS, 
+          t1.SAQ_ALPHYS, 
+          t1.SAQ_WORKLIM, 
+          t1.SAQ_ALMENT, 
+          t1.SAQ_WLMENT, 
+          t1.SAQ_FELTPEACE, 
+          t1.SAQ_PAINLIM, 
+          t1.SAQ_ENERGY, 
+          t1.SAQ_DOWNHEART, 
+          t1.SAQ_SOCACT, 
+          t1.Marital_Status, 
+          t1.Education_Level, 
+          t1.GOT_CARE, 
+          t1.NUMB_VISIT_MED, 
+          t1.EASY_MED_CARE, 
+          t1.HEALTH_CARE_RATING, 
+          t1.SMOKING, 
+          t1.HEALTH_STAT1, 
+          t1.HEALTH_STAT2, 
+          t1.HEALTH_STAT3, 
+          t1.FEEL_NERV, 
+          t1.FEEL_WORTHLESS, 
+          t1.FEEL_RESTLESS, 
+          t1.SAQ_ENERGY_rev, 
+          t1.SAQ_FELTPEACE_rev, 
+          t1.SAQ_GENH_rev, 
+          t1.SAQ_PAINLIM_rev, 
+          t1.SUM_SAQ_SF12, 
+          t1.SAQ2_DOCLIST, 
+          t1.SAQ2_DOCUND, 
+          t1.SAQ2_DOCRESP, 
+          t1.SAQ2_DOCTIME, 
+          t1.SAQ2_DOCSPEC, 
+          t1.SAQ2_EZUN, 
+          t1.SAQ2_DOCFOLLOW, 
+          t1.SAQ2_DOCSPEC_rev, 
+          t1.SAQ2_DocPat_SUM, 
+          t1.Marry12x_Recode, 
+          t1.'EDURECODE Categorical'n, 
+          t1.INFULLYR, 
+          t1.DUID, 
+          t1.PID, 
+          t1.DUPERSID1, 
+          t1.EVNTIDX, 
+          t1.EVENTRN, 
+          t1.ERHEVIDX, 
+          t1.FFEEIDX, 
+          t1.PANEL, 
+          t1.MPCDATA, 
+          t1.ERDATEYR, 
+          t1.ERDATEMM, 
+          t1.ERDATEDD, 
+          t1.SEEDOC, 
+          t1.VSTCTGRY, 
+          t1.VSTRELCN, 
+          t1.LABTEST, 
+          t1.SONOGRAM, 
+          t1.XRAYS, 
+          t1.MAMMOG, 
+          t1.MRI, 
+          t1.EKG, 
+          t1.EEG, 
+          t1.RCVVAC, 
+          t1.ANESTH, 
+          t1.THRTSWAB, 
+          t1.OTHSVCE, 
+          t1.SURGPROC, 
+          t1.MEDPRESC, 
+          t1.ERICD1X, 
+          t1.ERICD2X, 
+          t1.ERICD3X, 
+          t1.ERPRO1X, 
+          t1.ERCCC1X, 
+          t1.ERCCC2X, 
+          t1.ERCCC3X, 
+          t1.FFERTYPE, 
+          t1.FFBEF12, 
+          t1.ERXP12X, 
+          t1.ERTC12X, 
+          t1.ERFSF12X, 
+          t1.ERFMR12X, 
+          t1.ERFMD12X, 
+          t1.ERFPV12X, 
+          t1.ERFVA12X, 
+          t1.ERFTR12X, 
+          t1.ERFOF12X, 
+          t1.ERFSL12X, 
+          t1.ERFWC12X, 
+          t1.ERFOR12X, 
+          t1.ERFOU12X, 
+          t1.ERFOT12X, 
+          t1.ERFXP12X, 
+          t1.ERFTC12X, 
+          t1.ERDSF12X, 
+          t1.ERDMR12X, 
+          t1.ERDMD12X, 
+          t1.ERDPV12X, 
+          t1.ERDVA12X, 
+          t1.ERDTR12X, 
+          t1.ERDOF12X, 
+          t1.ERDSL12X, 
+          t1.ERDWC12X, 
+          t1.ERDOR12X, 
+          t1.ERDOU12X, 
+          t1.ERDOT12X, 
+          t1.ERDXP12X, 
+          t1.ERDTC12X, 
+          t1.IMPFLAG, 
+          t1.PERWT12F, 
+          t1.VARSTR, 
+          t1.VARPSU, 
+          t1.INER, 
+          /* MRI_Miss */
+            (CASE 
+               WHEN -7 = t1.MRI THEN .
+               WHEN -8 = t1.MRI THEN .
+               WHEN -9 = t1.MRI THEN .
+               ELSE t1.MRI
+            END) LABEL="Whether had catscan or MRI missing" AS MRI_Miss, 
+          /* XRAYS_Miss */
+            (CASE 
+               WHEN -7 = t1.XRAYS THEN .
+               WHEN -8 = t1.XRAYS THEN .
+               WHEN -9 = t1.XRAYS THEN .
+               ELSE t1.XRAYS
+            END) LABEL="Xray visit Missing Variables" AS XRAYS_Miss
+      FROM MYDATA.MEPS_FULLYR_AND_ER t1;
+QUIT;
+
+GOPTIONS NOACCESSIBLE;
+
+
+%LET _CLIENTTASKLABEL=;
+%LET _CLIENTPROJECTPATH=;
+%LET _CLIENTPROJECTNAME=;
+
+
+/*   START OF NODE: Recode_NoServ   */
+%LET _CLIENTTASKLABEL='Recode_NoServ';
+%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011315.egp';
+%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011315.egp';
+
+GOPTIONS ACCESSIBLE;
+%_eg_conditional_dropds(WORK.MEPS_FULLYR_Recode);
+
+PROC SQL;
+   CREATE TABLE WORK."MEPS_FULLYR_Recode"n AS 
+   SELECT /* MRI_recode */
+            (CASE  
+               WHEN t1.MRI_Miss = 95
+               THEN 2
+               ELSE t1.MRI_Miss
+            END) LABEL="Recoded MRI variable" AS MRI_recode, 
+          /* XRAYS_recode */
+            (CASE  
+               WHEN t1.XRAYS_Miss =95
+               THEN 2
+               ELSE t1.XRAYS_Miss
+            END) LABEL="X-rays recode" AS XRAYS_recode, 
+          t1.Marry12x_Recode_cate, 
+          t1.SAQ2_DocPatRel_sumcate, 
+          t1.Quartiles_Categorical, 
+          t1.DUPERSID, 
+          t1.AGE12X, 
+          t1.SEX, 
+          t1.REGION12, 
+          t1.RACETHX, 
+          t1.MARRY12X, 
+          t1.EDUYRDEG, 
+          t1.EDRECODE, 
+          t1.UNEMP12X, 
+          t1.UNEIMP12, 
+          t1.ADAPPT42, 
+          t1.ADCAPE42, 
+          t1.ADCLIM42, 
+          t1.ADCMPD42, 
+          t1.ADCMPM42, 
+          t1.ADCMPY42, 
+          t1.ADDAYA42, 
+          t1.ADDOWN42, 
+          t1.ADDPRS42, 
+          t1.ADDRBP42, 
+          t1.ADEFRT42, 
+          t1.ADEGMC42, 
+          t1.ADEXPL42, 
+          t1.ADEZUN42, 
+          t1.ADFFRM42, 
+          t1.ADFHLP42, 
+          t1.ADGENH42, 
+          t1.ADHECR42, 
+          t1.ADHOPE42, 
+          t1.ADILCR42, 
+          t1.ADILWW42, 
+          t1.ADINSA42, 
+          t1.ADINSB42, 
+          t1.ADINST42, 
+          t1.ADINTR42, 
+          t1.ADL3MO42, 
+          t1.ADLANG42, 
+          t1.ADLHLP42, 
+          t1.ADLIST42, 
+          t1.ADMALS42, 
+          t1.ADMWLM42, 
+          t1.ADNDCR42, 
+          t1.ADNERV42, 
+          t1.ADNRGY42, 
+          t1.ADNSMK42, 
+          t1.ADOVER42, 
+          t1.ADPAIN42, 
+          t1.ADPALS42, 
+          t1.ADPRTM42, 
+          t1.ADPRX42, 
+          t1.ADPWLM42, 
+          t1.ADRESP42, 
+          t1.ADREST42, 
+          t1.ADRISK42, 
+          t1.ADRTCR42, 
+          t1.ADRTWW42, 
+          t1.ADSAD42, 
+          t1.ADSMOK42, 
+          t1.ADSOCA42, 
+          t1.ADSPEC42, 
+          t1.ADSPRF42, 
+          t1.ADTLHW42, 
+          t1.ADUPRO42, 
+          t1.ADWRTH42, 
+          t1.PHQ242, 
+          t1.HPRAP12, 
+          t1.HPRAU12, 
+          t1.HPRDE12, 
+          t1.HPRFE12, 
+          t1.HPRJA12, 
+          t1.HPRJL12, 
+          t1.HPRJU12, 
+          t1.HPRMA12, 
+          t1.HPRMY12, 
+          t1.HPRNO12, 
+          t1.HPROC12, 
+          t1.HPRSE12, 
+          t1.MDDLPR42, 
+          t1.MDDLRS42, 
+          t1.MDUNAB42, 
+          t1.MDUNPR42, 
+          t1.MDUNRS42, 
+          t1.MDDLAY42, 
+          t1.DNUNAB42, 
+          t1.DNUNPR42, 
+          t1.DNUNRS42, 
+          t1.DNDLAY42, 
+          t1.DNDLPR42, 
+          t1.DNDLRS42, 
+          t1.RTHLTH31, 
+          t1.RTHLTH42, 
+          t1.RTHLTH53, 
+          t1.ARTHAGED, 
+          t1.ARTHDX, 
+          t1.ARTHTYPE, 
+          t1.ASTHAGED, 
+          t1.ASTHDX, 
+          t1.ADHDADDX, 
+          t1.ADHDAGED, 
+          t1.DSDIA53, 
+          t1.MIAGED, 
+          t1.MIDX, 
+          t1.HIBPAGED, 
+          t1.HIBPDX, 
+          t1.LEUKAGED, 
+          t1.LEUKREMS, 
+          t1.LUNGAGED, 
+          t1.LUNGREMS, 
+          t1.LYMPAGED, 
+          t1.LYMPREMS, 
+          t1.MELAAGED, 
+          t1.MELAREMS, 
+          t1.OTHRAGED, 
+          t1.OHRTAGED, 
+          t1.OHRTDX, 
+          t1.SKDKAGED, 
+          t1.SKDKREMS, 
+          t1.SKNMAGED, 
+          t1.STRKAGED, 
+          t1.STRKDX, 
+          t1.THRTAGED, 
+          t1.THRTREMS, 
+          t1.THYRAGED, 
+          t1.THYRREMS, 
+          t1.AIDHLP31, 
+          t1.AIDHLP53, 
+          t1.SSECP12X, 
+          t1.BUSIMP12, 
+          t1.BUSNP12X, 
+          t1.BRAIAGED, 
+          t1.BRAIREMS, 
+          t1.BRSTAGED, 
+          t1.BRSTEX53, 
+          t1.BRSTREMS, 
+          t1.CABLADDR, 
+          t1.CABRAIN, 
+          t1.CABREAST, 
+          t1.CACERVIX, 
+          t1.CACOLON, 
+          t1.CALEUKEM, 
+          t1.CALUNG, 
+          t1.CALYMPH, 
+          t1.CAMELANO, 
+          t1.CANCERDX, 
+          t1.CAOTHER, 
+          t1.CAPROSTA, 
+          t1.CARECO42, 
+          t1.CASHP12X, 
+          t1.CASKINDK, 
+          t1.CASKINNM, 
+          t1.CATHROAT, 
+          t1.CATHYROD, 
+          t1.CERVAGED, 
+          t1.CERVREMS, 
+          t1.SAQ_GENH, 
+          t1.SAQ_HEALIMACT, 
+          t1.SAQ_HEALIMSTRS, 
+          t1.SAQ_ALPHYS, 
+          t1.SAQ_WORKLIM, 
+          t1.SAQ_ALMENT, 
+          t1.SAQ_WLMENT, 
+          t1.SAQ_FELTPEACE, 
+          t1.SAQ_PAINLIM, 
+          t1.SAQ_ENERGY, 
+          t1.SAQ_DOWNHEART, 
+          t1.SAQ_SOCACT, 
+          t1.Marital_Status, 
+          t1.Education_Level, 
+          t1.GOT_CARE, 
+          t1.NUMB_VISIT_MED, 
+          t1.EASY_MED_CARE, 
+          t1.HEALTH_CARE_RATING, 
+          t1.SMOKING, 
+          t1.HEALTH_STAT1, 
+          t1.HEALTH_STAT2, 
+          t1.HEALTH_STAT3, 
+          t1.FEEL_NERV, 
+          t1.FEEL_WORTHLESS, 
+          t1.FEEL_RESTLESS, 
+          t1.SAQ_ENERGY_rev, 
+          t1.SAQ_FELTPEACE_rev, 
+          t1.SAQ_GENH_rev, 
+          t1.SAQ_PAINLIM_rev, 
+          t1.SUM_SAQ_SF12, 
+          t1.SAQ2_DOCLIST, 
+          t1.SAQ2_DOCUND, 
+          t1.SAQ2_DOCRESP, 
+          t1.SAQ2_DOCTIME, 
+          t1.SAQ2_DOCSPEC, 
+          t1.SAQ2_EZUN, 
+          t1.SAQ2_DOCFOLLOW, 
+          t1.SAQ2_DOCSPEC_rev, 
+          t1.SAQ2_DocPat_SUM, 
+          t1.Marry12x_Recode, 
+          t1.'EDURECODE Categorical'n, 
+          t1.INFULLYR, 
+          t1.DUID, 
+          t1.PID, 
+          t1.DUPERSID1, 
+          t1.EVNTIDX, 
+          t1.EVENTRN, 
+          t1.ERHEVIDX, 
+          t1.FFEEIDX, 
+          t1.PANEL, 
+          t1.MPCDATA, 
+          t1.ERDATEYR, 
+          t1.ERDATEMM, 
+          t1.ERDATEDD, 
+          t1.SEEDOC, 
+          t1.VSTCTGRY, 
+          t1.VSTRELCN, 
+          t1.LABTEST, 
+          t1.SONOGRAM, 
+          t1.XRAYS, 
+          t1.MAMMOG, 
+          t1.MRI, 
+          t1.EKG, 
+          t1.EEG, 
+          t1.RCVVAC, 
+          t1.ANESTH, 
+          t1.THRTSWAB, 
+          t1.OTHSVCE, 
+          t1.SURGPROC, 
+          t1.MEDPRESC, 
+          t1.ERICD1X, 
+          t1.ERICD2X, 
+          t1.ERICD3X, 
+          t1.ERPRO1X, 
+          t1.ERCCC1X, 
+          t1.ERCCC2X, 
+          t1.ERCCC3X, 
+          t1.FFERTYPE, 
+          t1.FFBEF12, 
+          t1.ERXP12X, 
+          t1.ERTC12X, 
+          t1.ERFSF12X, 
+          t1.ERFMR12X, 
+          t1.ERFMD12X, 
+          t1.ERFPV12X, 
+          t1.ERFVA12X, 
+          t1.ERFTR12X, 
+          t1.ERFOF12X, 
+          t1.ERFSL12X, 
+          t1.ERFWC12X, 
+          t1.ERFOR12X, 
+          t1.ERFOU12X, 
+          t1.ERFOT12X, 
+          t1.ERFXP12X, 
+          t1.ERFTC12X, 
+          t1.ERDSF12X, 
+          t1.ERDMR12X, 
+          t1.ERDMD12X, 
+          t1.ERDPV12X, 
+          t1.ERDVA12X, 
+          t1.ERDTR12X, 
+          t1.ERDOF12X, 
+          t1.ERDSL12X, 
+          t1.ERDWC12X, 
+          t1.ERDOR12X, 
+          t1.ERDOU12X, 
+          t1.ERDOT12X, 
+          t1.ERDXP12X, 
+          t1.ERDTC12X, 
+          t1.IMPFLAG, 
+          t1.PERWT12F, 
+          t1.VARSTR, 
+          t1.VARPSU, 
+          t1.INER, 
+          t1.MRI_Miss, 
+          t1.XRAYS_Miss
+      FROM WORK.QUERY_FOR_MEPS_FULLYR_AND_ER t1;
+QUIT;
+
+GOPTIONS NOACCESSIBLE;
+
+
+%LET _CLIENTTASKLABEL=;
+%LET _CLIENTPROJECTPATH=;
+%LET _CLIENTPROJECTNAME=;
+
+
+/*   START OF NODE: One-Way Frequencies   */
+%LET _CLIENTTASKLABEL='One-Way Frequencies';
+%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011315.egp';
+%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011315.egp';
+
+GOPTIONS ACCESSIBLE;
+/* -------------------------------------------------------------------
+   Code generated by SAS Task
+
+   Generated on: Tuesday, January 13, 2015 at 4:44:54 PM
+   By task: One-Way Frequencies
+
+   Input Data: Local:WORK.MEPS_FULLYR_RECODE
+   Server:  Local
+   ------------------------------------------------------------------- */
+
+%_eg_conditional_dropds(WORK.SORT);
+/* -------------------------------------------------------------------
+   Sort data set Local:WORK.MEPS_FULLYR_RECODE
+   ------------------------------------------------------------------- */
+
+PROC SQL;
+	CREATE VIEW WORK.SORT AS
+		SELECT T.XRAYS_recode, T.XRAYS
+	FROM WORK.MEPS_FULLYR_RECODE as T
+;
+QUIT;
+
+TITLE;
+TITLE1 "One-Way Frequencies for MRI";
+FOOTNOTE;
+FOOTNOTE1 "Generated by the SAS System (&_SASSERVERNAME, &SYSSCPL) on %TRIM(%QSYSFUNC(DATE(), NLDATE20.)) at %TRIM(%SYSFUNC(TIME(), TIMEAMPM12.)) by Julian Woo";
+PROC FREQ DATA=WORK.SORT
+	ORDER=INTERNAL
+;
+	TABLES XRAYS_recode /  SCORES=TABLE;
+	TABLES XRAYS /  SCORES=TABLE;
+RUN;
+/* -------------------------------------------------------------------
+   End of task code.
+   ------------------------------------------------------------------- */
+RUN; QUIT;
+%_eg_conditional_dropds(WORK.SORT);
+TITLE; FOOTNOTE;
+
+
+GOPTIONS NOACCESSIBLE;
+%LET _CLIENTTASKLABEL=;
+%LET _CLIENTPROJECTPATH=;
+%LET _CLIENTPROJECTNAME=;
+
+
+/*   START OF NODE: Make Count Variable   */
+%LET _CLIENTTASKLABEL='Make Count Variable';
+%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011315.egp';
+%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011315.egp';
+
+GOPTIONS ACCESSIBLE;
+%_eg_conditional_dropds(WORK.MEPS_FULLYR_Count);
+
+PROC SQL;
+   CREATE TABLE WORK."MEPS_FULLYR_Count"n AS 
+   SELECT t1.DUPERSID, 
+          /* COUNT_of_DUPERSID */
+            (COUNT(t1.DUPERSID)) AS COUNT_of_DUPERSID
+      FROM WORK.MEPS_FULLYR_RECODE t1
+      GROUP BY t1.DUPERSID;
+QUIT;
+
+GOPTIONS NOACCESSIBLE;
+
+
+%LET _CLIENTTASKLABEL=;
+%LET _CLIENTPROJECTPATH=;
+%LET _CLIENTPROJECTNAME=;
+
+
+/*   START OF NODE: Join Count Variable   */
+%LET _CLIENTTASKLABEL='Join Count Variable';
+%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011315.egp';
+%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011315.egp';
+
+GOPTIONS ACCESSIBLE;
+%_eg_conditional_dropds(WORK.MEPS_FULLYR_Join_Count);
+
+PROC SQL;
+   CREATE TABLE WORK."MEPS_FULLYR_Join_Count"n AS 
+   SELECT t1.MRI_recode, 
+          t1.XRAYS_recode, 
+          t1.Marry12x_Recode_cate, 
+          t1.SAQ2_DocPatRel_sumcate, 
+          t1.Quartiles_Categorical, 
+          t1.DUPERSID, 
+          t1.AGE12X, 
+          t1.SEX, 
+          t1.REGION12, 
+          t1.RACETHX, 
+          t1.MARRY12X, 
+          t2.DUPERSID AS DUPERSID2, 
+          t2.COUNT_of_DUPERSID, 
+          t1.EDUYRDEG, 
+          t1.EDRECODE, 
+          t1.UNEMP12X, 
+          t1.UNEIMP12, 
+          t1.ADAPPT42, 
+          t1.ADCAPE42, 
+          t1.ADCLIM42, 
+          t1.ADCMPD42, 
+          t1.ADCMPM42, 
+          t1.ADCMPY42, 
+          t1.ADDAYA42, 
+          t1.ADDOWN42, 
+          t1.ADDPRS42, 
+          t1.ADDRBP42, 
+          t1.ADEFRT42, 
+          t1.ADEGMC42, 
+          t1.ADEXPL42, 
+          t1.ADEZUN42, 
+          t1.ADFFRM42, 
+          t1.ADFHLP42, 
+          t1.ADGENH42, 
+          t1.ADHECR42, 
+          t1.ADHOPE42, 
+          t1.ADILCR42, 
+          t1.ADILWW42, 
+          t1.ADINSA42, 
+          t1.ADINSB42, 
+          t1.ADINST42, 
+          t1.ADINTR42, 
+          t1.ADL3MO42, 
+          t1.ADLANG42, 
+          t1.ADLHLP42, 
+          t1.ADLIST42, 
+          t1.ADMALS42, 
+          t1.ADMWLM42, 
+          t1.ADNDCR42, 
+          t1.ADNERV42, 
+          t1.ADNRGY42, 
+          t1.ADNSMK42, 
+          t1.ADOVER42, 
+          t1.ADPAIN42, 
+          t1.ADPALS42, 
+          t1.ADPRTM42, 
+          t1.ADPRX42, 
+          t1.ADPWLM42, 
+          t1.ADRESP42, 
+          t1.ADREST42, 
+          t1.ADRISK42, 
+          t1.ADRTCR42, 
+          t1.ADRTWW42, 
+          t1.ADSAD42, 
+          t1.ADSMOK42, 
+          t1.ADSOCA42, 
+          t1.ADSPEC42, 
+          t1.ADSPRF42, 
+          t1.ADTLHW42, 
+          t1.ADUPRO42, 
+          t1.ADWRTH42, 
+          t1.PHQ242, 
+          t1.HPRAP12, 
+          t1.HPRAU12, 
+          t1.HPRDE12, 
+          t1.HPRFE12, 
+          t1.HPRJA12, 
+          t1.HPRJL12, 
+          t1.HPRJU12, 
+          t1.HPRMA12, 
+          t1.HPRMY12, 
+          t1.HPRNO12, 
+          t1.HPROC12, 
+          t1.HPRSE12, 
+          t1.MDDLPR42, 
+          t1.MDDLRS42, 
+          t1.MDUNAB42, 
+          t1.MDUNPR42, 
+          t1.MDUNRS42, 
+          t1.MDDLAY42, 
+          t1.DNUNAB42, 
+          t1.DNUNPR42, 
+          t1.DNUNRS42, 
+          t1.DNDLAY42, 
+          t1.DNDLPR42, 
+          t1.DNDLRS42, 
+          t1.RTHLTH31, 
+          t1.RTHLTH42, 
+          t1.RTHLTH53, 
+          t1.ARTHAGED, 
+          t1.ARTHDX, 
+          t1.ARTHTYPE, 
+          t1.ASTHAGED, 
+          t1.ASTHDX, 
+          t1.ADHDADDX, 
+          t1.ADHDAGED, 
+          t1.DSDIA53, 
+          t1.MIAGED, 
+          t1.MIDX, 
+          t1.HIBPAGED, 
+          t1.HIBPDX, 
+          t1.LEUKAGED, 
+          t1.LEUKREMS, 
+          t1.LUNGAGED, 
+          t1.LUNGREMS, 
+          t1.LYMPAGED, 
+          t1.LYMPREMS, 
+          t1.MELAAGED, 
+          t1.MELAREMS, 
+          t1.OTHRAGED, 
+          t1.OHRTAGED, 
+          t1.OHRTDX, 
+          t1.SKDKAGED, 
+          t1.SKDKREMS, 
+          t1.SKNMAGED, 
+          t1.STRKAGED, 
+          t1.STRKDX, 
+          t1.THRTAGED, 
+          t1.THRTREMS, 
+          t1.THYRAGED, 
+          t1.THYRREMS, 
+          t1.AIDHLP31, 
+          t1.AIDHLP53, 
+          t1.SSECP12X, 
+          t1.BUSIMP12, 
+          t1.BUSNP12X, 
+          t1.BRAIAGED, 
+          t1.BRAIREMS, 
+          t1.BRSTAGED, 
+          t1.BRSTEX53, 
+          t1.BRSTREMS, 
+          t1.CABLADDR, 
+          t1.CABRAIN, 
+          t1.CABREAST, 
+          t1.CACERVIX, 
+          t1.CACOLON, 
+          t1.CALEUKEM, 
+          t1.CALUNG, 
+          t1.CALYMPH, 
+          t1.CAMELANO, 
+          t1.CANCERDX, 
+          t1.CAOTHER, 
+          t1.CAPROSTA, 
+          t1.CARECO42, 
+          t1.CASHP12X, 
+          t1.CASKINDK, 
+          t1.CASKINNM, 
+          t1.CATHROAT, 
+          t1.CATHYROD, 
+          t1.CERVAGED, 
+          t1.CERVREMS, 
+          t1.SAQ_GENH, 
+          t1.SAQ_HEALIMACT, 
+          t1.SAQ_HEALIMSTRS, 
+          t1.SAQ_ALPHYS, 
+          t1.SAQ_WORKLIM, 
+          t1.SAQ_ALMENT, 
+          t1.SAQ_WLMENT, 
+          t1.SAQ_FELTPEACE, 
+          t1.SAQ_PAINLIM, 
+          t1.SAQ_ENERGY, 
+          t1.SAQ_DOWNHEART, 
+          t1.SAQ_SOCACT, 
+          t1.Marital_Status, 
+          t1.Education_Level, 
+          t1.GOT_CARE, 
+          t1.NUMB_VISIT_MED, 
+          t1.EASY_MED_CARE, 
+          t1.HEALTH_CARE_RATING, 
+          t1.SMOKING, 
+          t1.HEALTH_STAT1, 
+          t1.HEALTH_STAT2, 
+          t1.HEALTH_STAT3, 
+          t1.FEEL_NERV, 
+          t1.FEEL_WORTHLESS, 
+          t1.FEEL_RESTLESS, 
+          t1.SAQ_ENERGY_rev, 
+          t1.SAQ_FELTPEACE_rev, 
+          t1.SAQ_GENH_rev, 
+          t1.SAQ_PAINLIM_rev, 
+          t1.SUM_SAQ_SF12, 
+          t1.SAQ2_DOCLIST, 
+          t1.SAQ2_DOCUND, 
+          t1.SAQ2_DOCRESP, 
+          t1.SAQ2_DOCTIME, 
+          t1.SAQ2_DOCSPEC, 
+          t1.SAQ2_EZUN, 
+          t1.SAQ2_DOCFOLLOW, 
+          t1.SAQ2_DOCSPEC_rev, 
+          t1.SAQ2_DocPat_SUM, 
+          t1.Marry12x_Recode, 
+          t1.'EDURECODE Categorical'n, 
+          t1.INFULLYR, 
+          t1.DUID, 
+          t1.PID, 
+          t1.DUPERSID1, 
+          t1.EVNTIDX, 
+          t1.EVENTRN, 
+          t1.ERHEVIDX, 
+          t1.FFEEIDX, 
+          t1.PANEL, 
+          t1.MPCDATA, 
+          t1.ERDATEYR, 
+          t1.ERDATEMM, 
+          t1.ERDATEDD, 
+          t1.SEEDOC, 
+          t1.VSTCTGRY, 
+          t1.VSTRELCN, 
+          t1.LABTEST, 
+          t1.SONOGRAM, 
+          t1.XRAYS, 
+          t1.MAMMOG, 
+          t1.MRI, 
+          t1.EKG, 
+          t1.EEG, 
+          t1.RCVVAC, 
+          t1.ANESTH, 
+          t1.THRTSWAB, 
+          t1.OTHSVCE, 
+          t1.SURGPROC, 
+          t1.MEDPRESC, 
+          t1.ERICD1X, 
+          t1.ERICD2X, 
+          t1.ERICD3X, 
+          t1.ERPRO1X, 
+          t1.ERCCC1X, 
+          t1.ERCCC2X, 
+          t1.ERCCC3X, 
+          t1.FFERTYPE, 
+          t1.FFBEF12, 
+          t1.ERXP12X, 
+          t1.ERTC12X, 
+          t1.ERFSF12X, 
+          t1.ERFMR12X, 
+          t1.ERFMD12X, 
+          t1.ERFPV12X, 
+          t1.ERFVA12X, 
+          t1.ERFTR12X, 
+          t1.ERFOF12X, 
+          t1.ERFSL12X, 
+          t1.ERFWC12X, 
+          t1.ERFOR12X, 
+          t1.ERFOU12X, 
+          t1.ERFOT12X, 
+          t1.ERFXP12X, 
+          t1.ERFTC12X, 
+          t1.ERDSF12X, 
+          t1.ERDMR12X, 
+          t1.ERDMD12X, 
+          t1.ERDPV12X, 
+          t1.ERDVA12X, 
+          t1.ERDTR12X, 
+          t1.ERDOF12X, 
+          t1.ERDSL12X, 
+          t1.ERDWC12X, 
+          t1.ERDOR12X, 
+          t1.ERDOU12X, 
+          t1.ERDOT12X, 
+          t1.ERDXP12X, 
+          t1.ERDTC12X, 
+          t1.IMPFLAG, 
+          t1.PERWT12F, 
+          t1.VARSTR, 
+          t1.VARPSU, 
+          t1.INER, 
+          t1.MRI_Miss, 
+          t1.XRAYS_Miss
+      FROM WORK.MEPS_FULLYR_RECODE t1
+           INNER JOIN WORK.MEPS_FULLYR_COUNT t2 ON (t1.DUPERSID = t2.DUPERSID);
+QUIT;
+
+GOPTIONS NOACCESSIBLE;
+
+
+
+%LET _CLIENTTASKLABEL=;
+%LET _CLIENTPROJECTPATH=;
+%LET _CLIENTPROJECTNAME=;
+
+
+/*   START OF NODE: Distribution Analysis   */
+%LET _CLIENTTASKLABEL='Distribution Analysis';
+%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011315.egp';
+%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011315.egp';
+
+GOPTIONS ACCESSIBLE;
+/* -------------------------------------------------------------------
+   Code generated by SAS Task
+
+   Generated on: Tuesday, January 13, 2015 at 4:44:54 PM
+   By task: Distribution Analysis
+
+   Input Data: Local:WORK.MEPS_FULLYR_JOIN_COUNT
    Server:  Local
    ------------------------------------------------------------------- */
 
 %_eg_conditional_dropds(WORK.SORTTempTableSorted);
 /* -------------------------------------------------------------------
-   Sort data set Local:WORK.MEPS_FULLYR_2012_REVER_SUM
+   PROC SHEWHART does not support DEVICE=ACTIVEX. Switching to PNG.
+   ------------------------------------------------------------------- */
+OPTIONS DEV=PNG;
+/* -------------------------------------------------------------------
+   Sort data set Local:WORK.MEPS_FULLYR_JOIN_COUNT
    ------------------------------------------------------------------- */
 
 PROC SQL;
 	CREATE VIEW WORK.SORTTempTableSorted AS
-		SELECT T.SUM_SAQ_SF12
-	FROM WORK.MEPS_FULLYR_2012_REVER_SUM as T
+		SELECT T.COUNT_of_DUPERSID
+	FROM WORK.MEPS_FULLYR_JOIN_COUNT as T
+;
+QUIT;
+TITLE;
+TITLE1 "Distribution analysis of DUPERSID Count (or Number of ER visits)";
+FOOTNOTE;
+FOOTNOTE1 "Generated by the SAS System (&_SASSERVERNAME, &SYSSCPL) on %TRIM(%QSYSFUNC(DATE(), NLDATE20.)) at %TRIM(%SYSFUNC(TIME(), TIMEAMPM12.))";
+	ODS EXCLUDE EXTREMEOBS MODES MOMENTS QUANTILES;
+	
+	GOPTIONS htext=1 cells;
+	SYMBOL v=SQUARE c=BLUE h=1 cells;
+	PATTERN v=SOLID
+	;
+PROC UNIVARIATE DATA = WORK.SORTTempTableSorted
+		CIBASIC(TYPE=TWOSIDED ALPHA=0.05)
+		MU0=0
+;
+	VAR COUNT_of_DUPERSID;
+	HISTOGRAM   COUNT_of_DUPERSID / NORMAL	( 	W=1 	L=1 	COLOR=YELLOW  MU=EST SIGMA=EST)
+	
+		CFRAME=GRAY CAXES=BLACK WAXIS=1  CBARLINE=BLACK CFILL=BLUE PFILL=SOLID ;
+	;
+/* -------------------------------------------------------------------
+   End of task code.
+   ------------------------------------------------------------------- */
+RUN; QUIT;
+%_eg_conditional_dropds(WORK.SORTTempTableSorted);
+TITLE; FOOTNOTE;
+/* -------------------------------------------------------------------
+   Restoring original device type setting.
+   ------------------------------------------------------------------- */
+OPTIONS DEV=ACTIVEX;
+
+
+GOPTIONS NOACCESSIBLE;
+%LET _CLIENTTASKLABEL=;
+%LET _CLIENTPROJECTPATH=;
+%LET _CLIENTPROJECTNAME=;
+
+
+/*   START OF NODE: One-Way Frequencies1   */
+%LET _CLIENTTASKLABEL='One-Way Frequencies1';
+%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011315.egp';
+%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011315.egp';
+
+GOPTIONS ACCESSIBLE;
+/* -------------------------------------------------------------------
+   Code generated by SAS Task
+
+   Generated on: Tuesday, January 13, 2015 at 4:44:54 PM
+   By task: One-Way Frequencies1
+
+   Input Data: Local:WORK.MEPS_FULLYR_JOIN_COUNT
+   Server:  Local
+   ------------------------------------------------------------------- */
+
+%_eg_conditional_dropds(WORK.SORT);
+/* -------------------------------------------------------------------
+   Sort data set Local:WORK.MEPS_FULLYR_JOIN_COUNT
+   ------------------------------------------------------------------- */
+
+PROC SQL;
+	CREATE VIEW WORK.SORT AS
+		SELECT T.COUNT_of_DUPERSID
+	FROM WORK.MEPS_FULLYR_JOIN_COUNT as T
+;
+QUIT;
+
+TITLE;
+TITLE1 "One-Way Frequencies";
+TITLE2 "Results";
+FOOTNOTE;
+FOOTNOTE1 "Generated by the SAS System (&_SASSERVERNAME, &SYSSCPL) on %TRIM(%QSYSFUNC(DATE(), NLDATE20.)) at %TRIM(%SYSFUNC(TIME(), TIMEAMPM12.))";
+PROC FREQ DATA=WORK.SORT
+	ORDER=INTERNAL
+;
+	TABLES COUNT_of_DUPERSID /  SCORES=TABLE;
+RUN;
+/* -------------------------------------------------------------------
+   End of task code.
+   ------------------------------------------------------------------- */
+RUN; QUIT;
+%_eg_conditional_dropds(WORK.SORT);
+TITLE; FOOTNOTE;
+
+
+GOPTIONS NOACCESSIBLE;
+%LET _CLIENTTASKLABEL=;
+%LET _CLIENTPROJECTPATH=;
+%LET _CLIENTPROJECTNAME=;
+
+
+/*   START OF NODE: Summary Statistics   */
+%LET _CLIENTTASKLABEL='Summary Statistics';
+%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011315.egp';
+%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011315.egp';
+
+GOPTIONS ACCESSIBLE;
+/* -------------------------------------------------------------------
+   Code generated by SAS Task
+
+   Generated on: Tuesday, January 13, 2015 at 4:44:54 PM
+   By task: Summary Statistics
+
+   Input Data: Local:WORK.MEPS_FULLYR_JOIN_COUNT
+   Server:  Local
+   ------------------------------------------------------------------- */
+
+%_eg_conditional_dropds(WORK.SORTTempTableSorted);
+/* -------------------------------------------------------------------
+   Sort data set Local:WORK.MEPS_FULLYR_JOIN_COUNT
+   ------------------------------------------------------------------- */
+
+PROC SQL;
+	CREATE VIEW WORK.SORTTempTableSorted AS
+		SELECT T.COUNT_of_DUPERSID
+	FROM WORK.MEPS_FULLYR_JOIN_COUNT as T
 ;
 QUIT;
 /* -------------------------------------------------------------------
    Run the Means Procedure
    ------------------------------------------------------------------- */
 TITLE;
-TITLE1 "Summary Statistics for Sum Variable";
+TITLE1 "Summary Statistics";
 TITLE2 "Results";
 FOOTNOTE;
 FOOTNOTE1 "Generated by the SAS System (&_SASSERVERNAME, &SYSSCPL) on %TRIM(%QSYSFUNC(DATE(), NLDATE20.)) at %TRIM(%SYSFUNC(TIME(), TIMEAMPM12.))";
@@ -1326,9 +4850,25 @@ PROC MEANS DATA=WORK.SORTTempTableSorted
 		Q1 
 		MEDIAN 
 		Q3	;
-	VAR SUM_SAQ_SF12;
+	VAR COUNT_of_DUPERSID;
 
 RUN;
+ODS GRAPHICS ON;
+TITLE;
+/*-----------------------------------------------------
+ * Use PROC UNIVARIATE to generate the histograms.
+ */
+
+TITLE;
+TITLE1 "Summary Statistics";
+TITLE2 "Histograms";
+PROC UNIVARIATE DATA=WORK.SORTTempTableSorted	NOPRINT	;
+	VAR COUNT_of_DUPERSID;
+
+			HISTOGRAM ;
+
+RUN; QUIT;
+ODS GRAPHICS OFF;
 /* -------------------------------------------------------------------
    End of task code.
    ------------------------------------------------------------------- */
@@ -1343,82 +4883,306 @@ GOPTIONS NOACCESSIBLE;
 %LET _CLIENTPROJECTNAME=;
 
 
-/*   START OF NODE: Distribution Analysis for SF-12   */
-%LET _CLIENTTASKLABEL='Distribution Analysis for SF-12';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
+/*   START OF NODE: Query Builder1   */
+%LET _CLIENTTASKLABEL='Query Builder1';
+%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011315.egp';
+%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011315.egp';
 
 GOPTIONS ACCESSIBLE;
-/* -------------------------------------------------------------------
-   Code generated by SAS Task
-
-   Generated on: Monday, January 12, 2015 at 8:31:02 PM
-   By task: Distribution Analysis for SF-12
-
-   Input Data: Local:WORK.MEPS_FULLYR_2012_REVER_SUM
-   Server:  Local
-   ------------------------------------------------------------------- */
-
-%_eg_conditional_dropds(WORK.SORTTempTableSorted);
-/* -------------------------------------------------------------------
-   PROC SHEWHART does not support DEVICE=ACTIVEX. Switching to PNG.
-   ------------------------------------------------------------------- */
-OPTIONS DEV=PNG;
-/* -------------------------------------------------------------------
-   Sort data set Local:WORK.MEPS_FULLYR_2012_REVER_SUM
-   ------------------------------------------------------------------- */
+%_eg_conditional_dropds(WORK.QUERY_FOR_MEPS_FULLYR_JOIN_COUNT);
 
 PROC SQL;
-	CREATE VIEW WORK.SORTTempTableSorted AS
-		SELECT T.SUM_SAQ_SF12
-	FROM WORK.MEPS_FULLYR_2012_REVER_SUM(FIRSTOBS=1 ) as T
-;
+   CREATE TABLE WORK.QUERY_FOR_MEPS_FULLYR_JOIN_COUNT AS 
+   SELECT /* NUM_ER_cate */
+            (CASE  
+               WHEN t1.COUNT_of_DUPERSID = 1
+               THEN 1
+               WHEN t1.COUNT_of_DUPERSID =2
+               THEN 2
+               WHEN t1.COUNT_of_DUPERSID >= 3 and  t1.COUNT_of_DUPERSID <= 5
+               THEN 3
+                WHEN t1.COUNT_of_DUPERSID >= 6 and  t1.COUNT_of_DUPERSID <= 15
+               THEN 4
+            END) LABEL="Number of Visits to the ER Categorical variable" AS NUM_ER_cate, 
+          t1.MRI_recode, 
+          t1.XRAYS_recode, 
+          t1.Marry12x_Recode_cate, 
+          t1.SAQ2_DocPatRel_sumcate, 
+          t1.Quartiles_Categorical, 
+          t1.DUPERSID, 
+          t1.AGE12X, 
+          t1.SEX, 
+          t1.REGION12, 
+          t1.RACETHX, 
+          t1.MARRY12X, 
+          t1.DUPERSID2, 
+          t1.COUNT_of_DUPERSID, 
+          t1.EDUYRDEG, 
+          t1.EDRECODE, 
+          t1.UNEMP12X, 
+          t1.UNEIMP12, 
+          t1.ADAPPT42, 
+          t1.ADCAPE42, 
+          t1.ADCLIM42, 
+          t1.ADCMPD42, 
+          t1.ADCMPM42, 
+          t1.ADCMPY42, 
+          t1.ADDAYA42, 
+          t1.ADDOWN42, 
+          t1.ADDPRS42, 
+          t1.ADDRBP42, 
+          t1.ADEFRT42, 
+          t1.ADEGMC42, 
+          t1.ADEXPL42, 
+          t1.ADEZUN42, 
+          t1.ADFFRM42, 
+          t1.ADFHLP42, 
+          t1.ADGENH42, 
+          t1.ADHECR42, 
+          t1.ADHOPE42, 
+          t1.ADILCR42, 
+          t1.ADILWW42, 
+          t1.ADINSA42, 
+          t1.ADINSB42, 
+          t1.ADINST42, 
+          t1.ADINTR42, 
+          t1.ADL3MO42, 
+          t1.ADLANG42, 
+          t1.ADLHLP42, 
+          t1.ADLIST42, 
+          t1.ADMALS42, 
+          t1.ADMWLM42, 
+          t1.ADNDCR42, 
+          t1.ADNERV42, 
+          t1.ADNRGY42, 
+          t1.ADNSMK42, 
+          t1.ADOVER42, 
+          t1.ADPAIN42, 
+          t1.ADPALS42, 
+          t1.ADPRTM42, 
+          t1.ADPRX42, 
+          t1.ADPWLM42, 
+          t1.ADRESP42, 
+          t1.ADREST42, 
+          t1.ADRISK42, 
+          t1.ADRTCR42, 
+          t1.ADRTWW42, 
+          t1.ADSAD42, 
+          t1.ADSMOK42, 
+          t1.ADSOCA42, 
+          t1.ADSPEC42, 
+          t1.ADSPRF42, 
+          t1.ADTLHW42, 
+          t1.ADUPRO42, 
+          t1.ADWRTH42, 
+          t1.PHQ242, 
+          t1.HPRAP12, 
+          t1.HPRAU12, 
+          t1.HPRDE12, 
+          t1.HPRFE12, 
+          t1.HPRJA12, 
+          t1.HPRJL12, 
+          t1.HPRJU12, 
+          t1.HPRMA12, 
+          t1.HPRMY12, 
+          t1.HPRNO12, 
+          t1.HPROC12, 
+          t1.HPRSE12, 
+          t1.MDDLPR42, 
+          t1.MDDLRS42, 
+          t1.MDUNAB42, 
+          t1.MDUNPR42, 
+          t1.MDUNRS42, 
+          t1.MDDLAY42, 
+          t1.DNUNAB42, 
+          t1.DNUNPR42, 
+          t1.DNUNRS42, 
+          t1.DNDLAY42, 
+          t1.DNDLPR42, 
+          t1.DNDLRS42, 
+          t1.RTHLTH31, 
+          t1.RTHLTH42, 
+          t1.RTHLTH53, 
+          t1.ARTHAGED, 
+          t1.ARTHDX, 
+          t1.ARTHTYPE, 
+          t1.ASTHAGED, 
+          t1.ASTHDX, 
+          t1.ADHDADDX, 
+          t1.ADHDAGED, 
+          t1.DSDIA53, 
+          t1.MIAGED, 
+          t1.MIDX, 
+          t1.HIBPAGED, 
+          t1.HIBPDX, 
+          t1.LEUKAGED, 
+          t1.LEUKREMS, 
+          t1.LUNGAGED, 
+          t1.LUNGREMS, 
+          t1.LYMPAGED, 
+          t1.LYMPREMS, 
+          t1.MELAAGED, 
+          t1.MELAREMS, 
+          t1.OTHRAGED, 
+          t1.OHRTAGED, 
+          t1.OHRTDX, 
+          t1.SKDKAGED, 
+          t1.SKDKREMS, 
+          t1.SKNMAGED, 
+          t1.STRKAGED, 
+          t1.STRKDX, 
+          t1.THRTAGED, 
+          t1.THRTREMS, 
+          t1.THYRAGED, 
+          t1.THYRREMS, 
+          t1.AIDHLP31, 
+          t1.AIDHLP53, 
+          t1.SSECP12X, 
+          t1.BUSIMP12, 
+          t1.BUSNP12X, 
+          t1.BRAIAGED, 
+          t1.BRAIREMS, 
+          t1.BRSTAGED, 
+          t1.BRSTEX53, 
+          t1.BRSTREMS, 
+          t1.CABLADDR, 
+          t1.CABRAIN, 
+          t1.CABREAST, 
+          t1.CACERVIX, 
+          t1.CACOLON, 
+          t1.CALEUKEM, 
+          t1.CALUNG, 
+          t1.CALYMPH, 
+          t1.CAMELANO, 
+          t1.CANCERDX, 
+          t1.CAOTHER, 
+          t1.CAPROSTA, 
+          t1.CARECO42, 
+          t1.CASHP12X, 
+          t1.CASKINDK, 
+          t1.CASKINNM, 
+          t1.CATHROAT, 
+          t1.CATHYROD, 
+          t1.CERVAGED, 
+          t1.CERVREMS, 
+          t1.SAQ_GENH, 
+          t1.SAQ_HEALIMACT, 
+          t1.SAQ_HEALIMSTRS, 
+          t1.SAQ_ALPHYS, 
+          t1.SAQ_WORKLIM, 
+          t1.SAQ_ALMENT, 
+          t1.SAQ_WLMENT, 
+          t1.SAQ_FELTPEACE, 
+          t1.SAQ_PAINLIM, 
+          t1.SAQ_ENERGY, 
+          t1.SAQ_DOWNHEART, 
+          t1.SAQ_SOCACT, 
+          t1.Marital_Status, 
+          t1.Education_Level, 
+          t1.GOT_CARE, 
+          t1.NUMB_VISIT_MED, 
+          t1.EASY_MED_CARE, 
+          t1.HEALTH_CARE_RATING, 
+          t1.SMOKING, 
+          t1.HEALTH_STAT1, 
+          t1.HEALTH_STAT2, 
+          t1.HEALTH_STAT3, 
+          t1.FEEL_NERV, 
+          t1.FEEL_WORTHLESS, 
+          t1.FEEL_RESTLESS, 
+          t1.SAQ_ENERGY_rev, 
+          t1.SAQ_FELTPEACE_rev, 
+          t1.SAQ_GENH_rev, 
+          t1.SAQ_PAINLIM_rev, 
+          t1.SUM_SAQ_SF12, 
+          t1.SAQ2_DOCLIST, 
+          t1.SAQ2_DOCUND, 
+          t1.SAQ2_DOCRESP, 
+          t1.SAQ2_DOCTIME, 
+          t1.SAQ2_DOCSPEC, 
+          t1.SAQ2_EZUN, 
+          t1.SAQ2_DOCFOLLOW, 
+          t1.SAQ2_DOCSPEC_rev, 
+          t1.SAQ2_DocPat_SUM, 
+          t1.Marry12x_Recode, 
+          t1.'EDURECODE Categorical'n, 
+          t1.INFULLYR, 
+          t1.DUID, 
+          t1.PID, 
+          t1.DUPERSID1, 
+          t1.EVNTIDX, 
+          t1.EVENTRN, 
+          t1.ERHEVIDX, 
+          t1.FFEEIDX, 
+          t1.PANEL, 
+          t1.MPCDATA, 
+          t1.ERDATEYR, 
+          t1.ERDATEMM, 
+          t1.ERDATEDD, 
+          t1.SEEDOC, 
+          t1.VSTCTGRY, 
+          t1.VSTRELCN, 
+          t1.LABTEST, 
+          t1.SONOGRAM, 
+          t1.XRAYS, 
+          t1.MAMMOG, 
+          t1.MRI, 
+          t1.EKG, 
+          t1.EEG, 
+          t1.RCVVAC, 
+          t1.ANESTH, 
+          t1.THRTSWAB, 
+          t1.OTHSVCE, 
+          t1.SURGPROC, 
+          t1.MEDPRESC, 
+          t1.ERICD1X, 
+          t1.ERICD2X, 
+          t1.ERICD3X, 
+          t1.ERPRO1X, 
+          t1.ERCCC1X, 
+          t1.ERCCC2X, 
+          t1.ERCCC3X, 
+          t1.FFERTYPE, 
+          t1.FFBEF12, 
+          t1.ERXP12X, 
+          t1.ERTC12X, 
+          t1.ERFSF12X, 
+          t1.ERFMR12X, 
+          t1.ERFMD12X, 
+          t1.ERFPV12X, 
+          t1.ERFVA12X, 
+          t1.ERFTR12X, 
+          t1.ERFOF12X, 
+          t1.ERFSL12X, 
+          t1.ERFWC12X, 
+          t1.ERFOR12X, 
+          t1.ERFOU12X, 
+          t1.ERFOT12X, 
+          t1.ERFXP12X, 
+          t1.ERFTC12X, 
+          t1.ERDSF12X, 
+          t1.ERDMR12X, 
+          t1.ERDMD12X, 
+          t1.ERDPV12X, 
+          t1.ERDVA12X, 
+          t1.ERDTR12X, 
+          t1.ERDOF12X, 
+          t1.ERDSL12X, 
+          t1.ERDWC12X, 
+          t1.ERDOR12X, 
+          t1.ERDOU12X, 
+          t1.ERDOT12X, 
+          t1.ERDXP12X, 
+          t1.ERDTC12X, 
+          t1.IMPFLAG, 
+          t1.PERWT12F, 
+          t1.VARSTR, 
+          t1.VARPSU, 
+          t1.INER, 
+          t1.MRI_Miss, 
+          t1.XRAYS_Miss
+      FROM WORK.MEPS_FULLYR_JOIN_COUNT t1;
 QUIT;
-TITLE;
-TITLE1 "Distribution analysis of Aggregate Health Score SF-12";
-FOOTNOTE;
-FOOTNOTE1 "Generated by the SAS System (&_SASSERVERNAME, &SYSSCPL) on %TRIM(%QSYSFUNC(DATE(), NLDATE20.)) at %TRIM(%SYSFUNC(TIME(), TIMEAMPM12.))  by Julian Woo";
-	ODS EXCLUDE EXTREMEOBS MODES MOMENTS;
-	
-	GOPTIONS htext=1 cells;
-	SYMBOL v=SQUARE c=BLUE h=1 cells;
-	PATTERN v=SOLID
-	;
-PROC UNIVARIATE DATA = WORK.SORTTempTableSorted
-		CIBASIC(TYPE=TWOSIDED ALPHA=0.05)
-		MU0=0
-;
-	VAR SUM_SAQ_SF12;
-	HISTOGRAM   SUM_SAQ_SF12 / NORMAL	( 	W=1 	L=1 	COLOR=YELLOW  MU=EST SIGMA=EST)
-	
-		CFRAME=GRAY CAXES=BLACK WAXIS=1  CBARLINE=BLACK CFILL=BLUE PFILL=SOLID ;
-	;
-/* -------------------------------------------------------------------
-   End of task code.
-   ------------------------------------------------------------------- */
-RUN; QUIT;
-%_eg_conditional_dropds(WORK.SORTTempTableSorted);
-TITLE; FOOTNOTE;
-/* -------------------------------------------------------------------
-   Restoring original device type setting.
-   ------------------------------------------------------------------- */
-OPTIONS DEV=ACTIVEX;
-
-
-GOPTIONS NOACCESSIBLE;
-%LET _CLIENTTASKLABEL=;
-%LET _CLIENTPROJECTPATH=;
-%LET _CLIENTPROJECTNAME=;
-
-
-/*   START OF NODE: SUM Categorical   */
-%LET _CLIENTTASKLABEL='SUM Categorical';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
-
-GOPTIONS ACCESSIBLE;
-%put ERROR: Unable to get SAS code. Unable to open input data;
-
 
 GOPTIONS NOACCESSIBLE;
 
@@ -1428,44 +5192,42 @@ GOPTIONS NOACCESSIBLE;
 %LET _CLIENTPROJECTNAME=;
 
 
-/*   START OF NODE: One-Way Frequencies1   */
-%LET _CLIENTTASKLABEL='One-Way Frequencies1';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
+/*   START OF NODE: One-Way Frequencies2   */
+%LET _CLIENTTASKLABEL='One-Way Frequencies2';
+%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011315.egp';
+%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011315.egp';
 
 GOPTIONS ACCESSIBLE;
 /* -------------------------------------------------------------------
    Code generated by SAS Task
 
-   Generated on: Monday, January 12, 2015 at 8:31:10 PM
-   By task: One-Way Frequencies1
+   Generated on: Tuesday, January 13, 2015 at 4:44:54 PM
+   By task: One-Way Frequencies2
 
-   Input Data: Local:WORK.MEPS_FULLYR_2012_SUMCATE
+   Input Data: Local:WORK.QUERY_FOR_MEPS_FULLYR_JOIN_COUNT
    Server:  Local
    ------------------------------------------------------------------- */
 
 %_eg_conditional_dropds(WORK.SORT);
 /* -------------------------------------------------------------------
-   Sort data set Local:WORK.MEPS_FULLYR_2012_SUMCATE
+   Sort data set Local:WORK.QUERY_FOR_MEPS_FULLYR_JOIN_COUNT
    ------------------------------------------------------------------- */
 
 PROC SQL;
 	CREATE VIEW WORK.SORT AS
-		SELECT T.Quartiles_Categorical, T.SUM_SAQ_SF12
-	FROM WORK.MEPS_FULLYR_2012_SUMCATE as T
+		SELECT T.NUM_ER_cate
+	FROM WORK.QUERY_FOR_MEPS_FULLYR_JOIN_COUNT as T
 ;
 QUIT;
 
 TITLE;
-TITLE1 "One-Way Frequencies";
-TITLE2 "Results";
+TITLE1 "One-Way Frequencies of Number of ER visits Categorical Variable";
 FOOTNOTE;
 FOOTNOTE1 "Generated by the SAS System (&_SASSERVERNAME, &SYSSCPL) on %TRIM(%QSYSFUNC(DATE(), NLDATE20.)) at %TRIM(%SYSFUNC(TIME(), TIMEAMPM12.))";
 PROC FREQ DATA=WORK.SORT
 	ORDER=INTERNAL
 ;
-	TABLES Quartiles_Categorical /  SCORES=TABLE;
-	TABLES SUM_SAQ_SF12 /  SCORES=TABLE;
+	TABLES NUM_ER_cate /  SCORES=TABLE;
 RUN;
 /* -------------------------------------------------------------------
    End of task code.
@@ -1483,1279 +5245,39 @@ GOPTIONS NOACCESSIBLE;
 
 /*   START OF NODE: Table Analysis   */
 %LET _CLIENTTASKLABEL='Table Analysis';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
+%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011315.egp';
+%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011315.egp';
 
 GOPTIONS ACCESSIBLE;
 /* -------------------------------------------------------------------
    Code generated by SAS Task
 
-   Generated on: Monday, January 12, 2015 at 8:31:11 PM
+   Generated on: Tuesday, January 13, 2015 at 4:44:55 PM
    By task: Table Analysis
 
-   Input Data: Local:WORK.MEPS_FULLYR_2012_SUMCATE
+   Input Data: Local:WORK.QUERY_FOR_MEPS_FULLYR_JOIN_COUNT
    Server:  Local
    ------------------------------------------------------------------- */
 
 %_eg_conditional_dropds(WORK.SORTTempTableSorted);
 /* -------------------------------------------------------------------
-   Sort data set Local:WORK.MEPS_FULLYR_2012_SUMCATE
+   Sort data set Local:WORK.QUERY_FOR_MEPS_FULLYR_JOIN_COUNT
    ------------------------------------------------------------------- */
 
 PROC SQL;
 	CREATE VIEW WORK.SORTTempTableSorted AS
-		SELECT T.SUM_SAQ_SF12, T.Quartiles_Categorical
-	FROM WORK.MEPS_FULLYR_2012_SUMCATE as T
+		SELECT T.COUNT_of_DUPERSID, T.NUM_ER_cate
+	FROM WORK.QUERY_FOR_MEPS_FULLYR_JOIN_COUNT as T
 ;
 QUIT;
 TITLE;
-TITLE1 "Table Analysis Sum Quantitative vs. Sum Categorical";
+TITLE1 "Table Analysis For Number of ER Visits";
 FOOTNOTE;
 FOOTNOTE1 "Generated by the SAS System (&_SASSERVERNAME, &SYSSCPL) on %TRIM(%QSYSFUNC(DATE(), NLDATE20.)) at %TRIM(%SYSFUNC(TIME(), TIMEAMPM12.)) by Julian Woo";
 PROC FREQ DATA = WORK.SORTTempTableSorted
 	ORDER=INTERNAL
 ;
-	TABLES SUM_SAQ_SF12 * Quartiles_Categorical /
-		NOROW
-		NOPERCENT
-		MISSPRINT
-		NOCUM
-		SCORES=TABLE
-		ALPHA=0.05;
-/* -------------------------------------------------------------------
-   End of task code.
-   ------------------------------------------------------------------- */
-RUN; QUIT;
-%_eg_conditional_dropds(WORK.SORTTempTableSorted);
-TITLE; FOOTNOTE;
-
-
-GOPTIONS NOACCESSIBLE;
-%LET _CLIENTTASKLABEL=;
-%LET _CLIENTPROJECTPATH=;
-%LET _CLIENTPROJECTNAME=;
-
-
-/*   START OF NODE: Recode Variable 2   */
-%LET _CLIENTTASKLABEL='Recode Variable 2';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
-
-GOPTIONS ACCESSIBLE;
-%_eg_conditional_dropds(WORK.MEPS_FULLYR_2012_SUBSET_DOCPAT);
-
-PROC SQL;
-   CREATE TABLE WORK."MEPS_FULLYR_2012_SUBSET_DOCPAT"n AS 
-   SELECT t1.DUPERSID, 
-          t1.AGE12X, 
-          t1.SEX, 
-          t1.REGION12, 
-          t1.RACETHX, 
-          t1.MARRY12X, 
-          t1.EDUYRDEG, 
-          t1.UNEMP12X, 
-          t1.UNEIMP12, 
-          t1.ADAPPT42, 
-          t1.ADCAPE42, 
-          t1.ADCLIM42, 
-          t1.ADCMPD42, 
-          t1.ADCMPM42, 
-          t1.ADCMPY42, 
-          t1.ADDAYA42, 
-          t1.ADDOWN42, 
-          t1.ADDPRS42, 
-          t1.ADDRBP42, 
-          t1.ADEFRT42, 
-          t1.ADEGMC42, 
-          t1.ADEXPL42, 
-          t1.ADEZUN42, 
-          t1.ADFFRM42, 
-          t1.ADFHLP42, 
-          t1.ADGENH42, 
-          t1.ADHECR42, 
-          t1.ADHOPE42, 
-          t1.ADILCR42, 
-          t1.ADILWW42, 
-          t1.ADINSA42, 
-          t1.ADINSB42, 
-          t1.ADINST42, 
-          t1.ADINTR42, 
-          t1.ADL3MO42, 
-          t1.ADLANG42, 
-          t1.ADLHLP42, 
-          t1.ADLIST42, 
-          t1.ADMALS42, 
-          t1.ADMWLM42, 
-          t1.ADNDCR42, 
-          t1.ADNERV42, 
-          t1.ADNRGY42, 
-          t1.ADNSMK42, 
-          t1.ADOVER42, 
-          t1.ADPAIN42, 
-          t1.ADPALS42, 
-          t1.ADPRTM42, 
-          t1.ADPRX42, 
-          t1.ADPWLM42, 
-          t1.ADRESP42, 
-          t1.ADREST42, 
-          t1.ADRISK42, 
-          t1.ADRTCR42, 
-          t1.ADRTWW42, 
-          t1.ADSAD42, 
-          t1.ADSMOK42, 
-          t1.ADSOCA42, 
-          t1.ADSPEC42, 
-          t1.ADSPRF42, 
-          t1.ADTLHW42, 
-          t1.ADUPRO42, 
-          t1.ADWRTH42, 
-          t1.PHQ242, 
-          t1.HPRAP12, 
-          t1.HPRAU12, 
-          t1.HPRDE12, 
-          t1.HPRFE12, 
-          t1.HPRJA12, 
-          t1.HPRJL12, 
-          t1.HPRJU12, 
-          t1.HPRMA12, 
-          t1.HPRMY12, 
-          t1.HPRNO12, 
-          t1.HPROC12, 
-          t1.HPRSE12, 
-          t1.MDDLPR42, 
-          t1.MDDLRS42, 
-          t1.MDUNAB42, 
-          t1.MDUNPR42, 
-          t1.MDUNRS42, 
-          t1.MDDLAY42, 
-          t1.DNUNAB42, 
-          t1.DNUNPR42, 
-          t1.DNUNRS42, 
-          t1.DNDLAY42, 
-          t1.DNDLPR42, 
-          t1.DNDLRS42, 
-          t1.RTHLTH31, 
-          t1.RTHLTH42, 
-          t1.RTHLTH53, 
-          t1.ARTHAGED, 
-          t1.ARTHDX, 
-          t1.ARTHTYPE, 
-          t1.ASTHAGED, 
-          t1.ASTHDX, 
-          t1.ADHDADDX, 
-          t1.ADHDAGED, 
-          t1.DSDIA53, 
-          t1.MIAGED, 
-          t1.MIDX, 
-          t1.HIBPAGED, 
-          t1.HIBPDX, 
-          t1.LEUKAGED, 
-          t1.LEUKREMS, 
-          t1.LUNGAGED, 
-          t1.LUNGREMS, 
-          t1.LYMPAGED, 
-          t1.LYMPREMS, 
-          t1.MELAAGED, 
-          t1.MELAREMS, 
-          t1.OTHRAGED, 
-          t1.OHRTAGED, 
-          t1.OHRTDX, 
-          t1.SKDKAGED, 
-          t1.SKDKREMS, 
-          t1.SKNMAGED, 
-          t1.STRKAGED, 
-          t1.STRKDX, 
-          t1.THRTAGED, 
-          t1.THRTREMS, 
-          t1.THYRAGED, 
-          t1.THYRREMS, 
-          t1.AIDHLP31, 
-          t1.AIDHLP53, 
-          t1.SSECP12X, 
-          t1.BUSIMP12, 
-          t1.BUSNP12X, 
-          t1.BRAIAGED, 
-          t1.BRAIREMS, 
-          t1.BRSTAGED, 
-          t1.BRSTEX53, 
-          t1.BRSTREMS, 
-          t1.CABLADDR, 
-          t1.CABRAIN, 
-          t1.CABREAST, 
-          t1.CACERVIX, 
-          t1.CACOLON, 
-          t1.CALEUKEM, 
-          t1.CALUNG, 
-          t1.CALYMPH, 
-          t1.CAMELANO, 
-          t1.CANCERDX, 
-          t1.CAOTHER, 
-          t1.CAPROSTA, 
-          t1.CARECO42, 
-          t1.CASHP12X, 
-          t1.CASKINDK, 
-          t1.CASKINNM, 
-          t1.CATHROAT, 
-          t1.CATHYROD, 
-          t1.CERVAGED, 
-          t1.CERVREMS, 
-          /* SAQ2_DOCLIST */
-            (CASE 
-               WHEN -1 = t1.ADLIST42 THEN .
-               WHEN -7 = t1.ADLIST42 THEN .
-               WHEN -9 = t1.ADLIST42 THEN .
-               ELSE t1.ADLIST42
-            END) LABEL="Doctor listened to patient" AS SAQ2_DOCLIST, 
-          /* SAQ2_DOCEXPL */
-            (CASE 
-               WHEN -1 = t1.ADEXPL42 THEN .
-               WHEN -9 = t1.ADEXPL42 THEN .
-               ELSE t1.ADEXPL42
-            END) LABEL="Doctor Explained so understood" AS SAQ2_DOCEXPL, 
-          /* SAQ2_DOCRESP */
-            (CASE 
-               WHEN -1 = t1.ADRESP42 THEN .
-               WHEN -9 = t1.ADRESP42 THEN .
-               ELSE t1.ADRESP42
-            END) LABEL="Doctor Showed Respect" AS SAQ2_DOCRESP, 
-          /* SAQ2_DOCENUF */
-            (CASE 
-               WHEN -1 = t1.ADPRTM42 THEN .
-               WHEN -9 = t1.ADPRTM42 THEN .
-               ELSE t1.ADPRTM42
-            END) LABEL="Doctor Spent enough time with patient" AS SAQ2_DOCENUF, 
-          /* SAQ2_DOCSPEC */
-            (CASE 
-               WHEN -1 = t1.ADINST42 THEN .
-               WHEN -8 = t1.ADINST42 THEN .
-               WHEN -9 = t1.ADINST42 THEN .
-               ELSE t1.ADINST42
-            END) LABEL="Doctor gave specific instructions" AS SAQ2_DOCSPEC, 
-          /* SAQ2_DOCEZUN */
-            (CASE 
-               WHEN -1 = t1.ADEZUN42 THEN .
-               WHEN -9 = t1.ADEZUN42 THEN .
-               ELSE t1.ADEZUN42
-            END) LABEL="Doctor gave instruction that was easy to understand" AS SAQ2_DOCEZUN, 
-          /* SAQ2_DOCDESFOL */
-            (CASE 
-               WHEN -1 = t1.ADTLHW42 THEN .
-               WHEN -8 = t1.ADTLHW42 THEN .
-               WHEN -9 = t1.ADTLHW42 THEN .
-               ELSE t1.ADTLHW42
-            END) LABEL="Doctor asked to describe how to follow" AS SAQ2_DOCDESFOL
-      FROM JWOODATA.MEPS_FULLYR_2012_SUBSET t1;
-QUIT;
-
-GOPTIONS NOACCESSIBLE;
-%LET _CLIENTTASKLABEL=;
-%LET _CLIENTPROJECTPATH=;
-%LET _CLIENTPROJECTNAME=;
-
-
-/*   START OF NODE: Reverse Code2   */
-%LET _CLIENTTASKLABEL='Reverse Code2';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
-
-GOPTIONS ACCESSIBLE;
-%put ERROR: Unable to get SAS code. Unable to open input data;
-
-
-GOPTIONS NOACCESSIBLE;
-
-
-%LET _CLIENTTASKLABEL=;
-%LET _CLIENTPROJECTPATH=;
-%LET _CLIENTPROJECTNAME=;
-
-
-/*   START OF NODE: SUM Variable Doc-Pat Rela   */
-%LET _CLIENTTASKLABEL='SUM Variable Doc-Pat Rela';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
-
-GOPTIONS ACCESSIBLE;
-%put ERROR: Unable to get SAS code. Unable to open input data;
-
-
-GOPTIONS NOACCESSIBLE;
-
-
-%LET _CLIENTTASKLABEL=;
-%LET _CLIENTPROJECTPATH=;
-%LET _CLIENTPROJECTNAME=;
-
-
-/*   START OF NODE: List Data2   */
-%LET _CLIENTTASKLABEL='List Data2';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
-
-GOPTIONS ACCESSIBLE;
-/* -------------------------------------------------------------------
-   Code generated by SAS Task
-
-   Generated on: Monday, January 12, 2015 at 8:31:05 PM
-   By task: List Data2
-
-   Input Data: Local:WORK.MEPS_FULLYR_2012_SUM
-   Server:  Local
-   ------------------------------------------------------------------- */
-
-%_eg_conditional_dropds(WORK.SORTTempTableSorted);
-/* -------------------------------------------------------------------
-   Sort data set Local:WORK.MEPS_FULLYR_2012_SUM
-   ------------------------------------------------------------------- */
-
-PROC SQL;
-	CREATE VIEW WORK.SORTTempTableSorted AS
-		SELECT T.SAQ2_DOCEZUN, T.SAQ2_DOCDESFOL, T.SAQ2_DOCLIST, T.SAQ2_DOCEXPL, T.SAQ2_DOCRESP, T.SAQ2_DOCENUF, T.SAQ2_DOCSPEC_rev
-	FROM WORK.MEPS_FULLYR_2012_SUM as T
-;
-QUIT;
-TITLE;
-TITLE1 "Report Listing for Sum Variable";
-FOOTNOTE;
-FOOTNOTE1 "Generated by the SAS System (&_SASSERVERNAME, &SYSSCPL) on %TRIM(%QSYSFUNC(DATE(), NLDATE20.)) at %TRIM(%SYSFUNC(TIME(), TIMEAMPM12.)) by Julian Woo";
-
-PROC PRINT DATA=WORK.SORTTempTableSorted
-	(OBS=50)
-	OBS="Row number"
-	LABEL
-	;
-	VAR SAQ2_DOCEZUN SAQ2_DOCDESFOL SAQ2_DOCLIST SAQ2_DOCEXPL SAQ2_DOCRESP SAQ2_DOCENUF SAQ2_DOCSPEC_rev;
-RUN;
-/* -------------------------------------------------------------------
-   End of task code.
-   ------------------------------------------------------------------- */
-RUN; QUIT;
-%_eg_conditional_dropds(WORK.SORTTempTableSorted);
-TITLE; FOOTNOTE;
-
-
-GOPTIONS NOACCESSIBLE;
-%LET _CLIENTTASKLABEL=;
-%LET _CLIENTPROJECTPATH=;
-%LET _CLIENTPROJECTNAME=;
-
-
-/*   START OF NODE: One-Way Frequencies2   */
-%LET _CLIENTTASKLABEL='One-Way Frequencies2';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
-
-GOPTIONS ACCESSIBLE;
-/* -------------------------------------------------------------------
-   Code generated by SAS Task
-
-   Generated on: Monday, January 12, 2015 at 8:31:06 PM
-   By task: One-Way Frequencies2
-
-   Input Data: Local:WORK.MEPS_FULLYR_2012_SUM
-   Server:  Local
-   ------------------------------------------------------------------- */
-
-%_eg_conditional_dropds(WORK.SORT);
-/* -------------------------------------------------------------------
-   Sort data set Local:WORK.MEPS_FULLYR_2012_SUM
-   ------------------------------------------------------------------- */
-
-PROC SQL;
-	CREATE VIEW WORK.SORT AS
-		SELECT T.SUM_DOCPATREL
-	FROM WORK.MEPS_FULLYR_2012_SUM as T
-;
-QUIT;
-
-TITLE;
-TITLE1 "One-Way Frequencies for Sum Variable";
-TITLE2 "Results";
-FOOTNOTE;
-FOOTNOTE1 "Generated by the SAS System (&_SASSERVERNAME, &SYSSCPL) on %TRIM(%QSYSFUNC(DATE(), NLDATE20.)) at %TRIM(%SYSFUNC(TIME(), TIMEAMPM12.)) by Julian Woo";
-PROC FREQ DATA=WORK.SORT
-	ORDER=INTERNAL
-;
-	TABLES SUM_DOCPATREL /  SCORES=TABLE;
-RUN;
-/* -------------------------------------------------------------------
-   End of task code.
-   ------------------------------------------------------------------- */
-RUN; QUIT;
-%_eg_conditional_dropds(WORK.SORT);
-TITLE; FOOTNOTE;
-
-
-GOPTIONS NOACCESSIBLE;
-%LET _CLIENTTASKLABEL=;
-%LET _CLIENTPROJECTPATH=;
-%LET _CLIENTPROJECTNAME=;
-
-
-/*   START OF NODE: Summary Statistics1   */
-%LET _CLIENTTASKLABEL='Summary Statistics1';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
-
-GOPTIONS ACCESSIBLE;
-/* -------------------------------------------------------------------
-   Code generated by SAS Task
-
-   Generated on: Monday, January 12, 2015 at 8:31:07 PM
-   By task: Summary Statistics1
-
-   Input Data: Local:WORK.MEPS_FULLYR_2012_SUM
-   Server:  Local
-   ------------------------------------------------------------------- */
-
-%_eg_conditional_dropds(WORK.SORTTempTableSorted);
-/* -------------------------------------------------------------------
-   Sort data set Local:WORK.MEPS_FULLYR_2012_SUM
-   ------------------------------------------------------------------- */
-
-PROC SQL;
-	CREATE VIEW WORK.SORTTempTableSorted AS
-		SELECT T.SUM_DOCPATREL
-	FROM WORK.MEPS_FULLYR_2012_SUM as T
-;
-QUIT;
-/* -------------------------------------------------------------------
-   Run the Means Procedure
-   ------------------------------------------------------------------- */
-TITLE;
-TITLE1 "Summary Statistics for Sum Variable - Doc-Patient Relationship";
-FOOTNOTE;
-FOOTNOTE1 "Generated by the SAS System (&_SASSERVERNAME, &SYSSCPL) on %TRIM(%QSYSFUNC(DATE(), NLDATE20.)) at %TRIM(%SYSFUNC(TIME(), TIMEAMPM12.)) by Julian Woo";
-PROC MEANS DATA=WORK.SORTTempTableSorted
-	FW=12
-	PRINTALLTYPES
-	CHARTYPE
-	QMETHOD=OS
-	VARDEF=DF 	
-		MEAN 
-		STD 
-		MIN 
-		MAX 
-		MODE 
-		N 
-		NMISS	
-		Q1 
-		MEDIAN 
-		Q3	;
-	VAR SUM_DOCPATREL;
-
-RUN;
-/* -------------------------------------------------------------------
-   End of task code.
-   ------------------------------------------------------------------- */
-RUN; QUIT;
-%_eg_conditional_dropds(WORK.SORTTempTableSorted);
-TITLE; FOOTNOTE;
-
-
-GOPTIONS NOACCESSIBLE;
-%LET _CLIENTTASKLABEL=;
-%LET _CLIENTPROJECTPATH=;
-%LET _CLIENTPROJECTNAME=;
-
-
-/*   START OF NODE: Distribution Analysis   */
-%LET _CLIENTTASKLABEL='Distribution Analysis';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
-
-GOPTIONS ACCESSIBLE;
-/* -------------------------------------------------------------------
-   Code generated by SAS Task
-
-   Generated on: Monday, January 12, 2015 at 8:31:08 PM
-   By task: Distribution Analysis
-
-   Input Data: Local:WORK.MEPS_FULLYR_2012_SUM
-   Server:  Local
-   ------------------------------------------------------------------- */
-
-%_eg_conditional_dropds(WORK.SORTTempTableSorted);
-/* -------------------------------------------------------------------
-   PROC SHEWHART does not support DEVICE=ACTIVEX. Switching to PNG.
-   ------------------------------------------------------------------- */
-OPTIONS DEV=PNG;
-/* -------------------------------------------------------------------
-   Sort data set Local:WORK.MEPS_FULLYR_2012_SUM
-   ------------------------------------------------------------------- */
-
-PROC SQL;
-	CREATE VIEW WORK.SORTTempTableSorted AS
-		SELECT T.SUM_DOCPATREL
-	FROM WORK.MEPS_FULLYR_2012_SUM as T
-;
-QUIT;
-TITLE;
-TITLE1 "Distribution analysis of Sum Variable Doctor-Patient Relationship";
-FOOTNOTE;
-FOOTNOTE1 "Generated by the SAS System (&_SASSERVERNAME, &SYSSCPL) on %TRIM(%QSYSFUNC(DATE(), NLDATE20.)) at %TRIM(%SYSFUNC(TIME(), TIMEAMPM12.)) by Julian Woo";
-	ODS EXCLUDE EXTREMEOBS MODES MOMENTS QUANTILES;
-	
-	GOPTIONS htext=1 cells;
-	SYMBOL v=SQUARE c=BLUE h=1 cells;
-	PATTERN v=SOLID
-	;
-PROC UNIVARIATE DATA = WORK.SORTTempTableSorted
-		CIBASIC(TYPE=TWOSIDED ALPHA=0.05)
-		MU0=0
-;
-	VAR SUM_DOCPATREL;
-	HISTOGRAM   SUM_DOCPATREL / NORMAL	( 	W=1 	L=1 	COLOR=YELLOW  MU=EST SIGMA=EST)
-	
-		CFRAME=GRAY CAXES=BLACK WAXIS=1  CBARLINE=BLACK CFILL=BLUE PFILL=SOLID ;
-	;
-/* -------------------------------------------------------------------
-   End of task code.
-   ------------------------------------------------------------------- */
-RUN; QUIT;
-%_eg_conditional_dropds(WORK.SORTTempTableSorted);
-TITLE; FOOTNOTE;
-/* -------------------------------------------------------------------
-   Restoring original device type setting.
-   ------------------------------------------------------------------- */
-OPTIONS DEV=ACTIVEX;
-
-
-GOPTIONS NOACCESSIBLE;
-%LET _CLIENTTASKLABEL=;
-%LET _CLIENTPROJECTPATH=;
-%LET _CLIENTPROJECTNAME=;
-
-
-/*   START OF NODE: SUM categorical var   */
-%LET _CLIENTTASKLABEL='SUM categorical var';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
-
-GOPTIONS ACCESSIBLE;
-%put ERROR: Unable to get SAS code. Unable to open input data;
-
-
-GOPTIONS NOACCESSIBLE;
-
-
-%LET _CLIENTTASKLABEL=;
-%LET _CLIENTPROJECTPATH=;
-%LET _CLIENTPROJECTNAME=;
-
-
-/*   START OF NODE: One-Way Frequencies3   */
-%LET _CLIENTTASKLABEL='One-Way Frequencies3';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
-
-GOPTIONS ACCESSIBLE;
-/* -------------------------------------------------------------------
-   Code generated by SAS Task
-
-   Generated on: Monday, January 12, 2015 at 8:31:12 PM
-   By task: One-Way Frequencies3
-
-   Input Data: Local:WORK.MEPS_FULLYR_2012_SUM_CAT
-   Server:  Local
-   ------------------------------------------------------------------- */
-
-%_eg_conditional_dropds(WORK.SORT);
-/* -------------------------------------------------------------------
-   Sort data set Local:WORK.MEPS_FULLYR_2012_SUM_CAT
-   ------------------------------------------------------------------- */
-
-PROC SQL;
-	CREATE VIEW WORK.SORT AS
-		SELECT T.SUM_DOCPATREL, T.SUM_DOCPATREL_cat
-	FROM WORK.MEPS_FULLYR_2012_SUM_CAT as T
-;
-QUIT;
-
-TITLE;
-TITLE1 "One-Way Frequencies Sum Var. Categorical";
-FOOTNOTE;
-FOOTNOTE1 "Generated by the SAS System (&_SASSERVERNAME, &SYSSCPL) on %TRIM(%QSYSFUNC(DATE(), NLDATE20.)) at %TRIM(%SYSFUNC(TIME(), TIMEAMPM12.)) by Julian Woo";
-PROC FREQ DATA=WORK.SORT
-	ORDER=INTERNAL
-;
-	TABLES SUM_DOCPATREL /  SCORES=TABLE;
-	TABLES SUM_DOCPATREL_cat /  SCORES=TABLE;
-RUN;
-/* -------------------------------------------------------------------
-   End of task code.
-   ------------------------------------------------------------------- */
-RUN; QUIT;
-%_eg_conditional_dropds(WORK.SORT);
-TITLE; FOOTNOTE;
-
-
-GOPTIONS NOACCESSIBLE;
-%LET _CLIENTTASKLABEL=;
-%LET _CLIENTPROJECTPATH=;
-%LET _CLIENTPROJECTNAME=;
-
-
-/*   START OF NODE: Table Analysis1   */
-%LET _CLIENTTASKLABEL='Table Analysis1';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
-
-GOPTIONS ACCESSIBLE;
-/* -------------------------------------------------------------------
-   Code generated by SAS Task
-
-   Generated on: Monday, January 12, 2015 at 8:31:13 PM
-   By task: Table Analysis1
-
-   Input Data: Local:WORK.MEPS_FULLYR_2012_SUM_CAT
-   Server:  Local
-   ------------------------------------------------------------------- */
-
-%_eg_conditional_dropds(WORK.SORTTempTableSorted);
-/* -------------------------------------------------------------------
-   Sort data set Local:WORK.MEPS_FULLYR_2012_SUM_CAT
-   ------------------------------------------------------------------- */
-
-PROC SQL;
-	CREATE VIEW WORK.SORTTempTableSorted AS
-		SELECT T.SUM_DOCPATREL_cat, T.SUM_DOCPATREL
-	FROM WORK.MEPS_FULLYR_2012_SUM_CAT as T
-;
-QUIT;
-TITLE;
-TITLE1 "Table Analysis for Sum quantiative vs. Sum categorical";
-FOOTNOTE;
-FOOTNOTE1 "Generated by the SAS System (&_SASSERVERNAME, &SYSSCPL) on %TRIM(%QSYSFUNC(DATE(), NLDATE20.)) at %TRIM(%SYSFUNC(TIME(), TIMEAMPM12.)) by Julian Woo";
-PROC FREQ DATA = WORK.SORTTempTableSorted
-	ORDER=INTERNAL
-;
-	TABLES SUM_DOCPATREL * SUM_DOCPATREL_cat /
-		NOROW
-		NOCOL
-		NOPERCENT
-		NOCUM
-		SCORES=TABLE
-		ALPHA=0.05;
-/* -------------------------------------------------------------------
-   End of task code.
-   ------------------------------------------------------------------- */
-RUN; QUIT;
-%_eg_conditional_dropds(WORK.SORTTempTableSorted);
-TITLE; FOOTNOTE;
-
-
-GOPTIONS NOACCESSIBLE;
-%LET _CLIENTTASKLABEL=;
-%LET _CLIENTPROJECTPATH=;
-%LET _CLIENTPROJECTNAME=;
-
-
-/*   START OF NODE: One-Way Frequencies4   */
-%LET _CLIENTTASKLABEL='One-Way Frequencies4';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
-
-GOPTIONS ACCESSIBLE;
-/* -------------------------------------------------------------------
-   Code generated by SAS Task
-
-   Generated on: Monday, January 12, 2015 at 8:30:30 PM
-   By task: One-Way Frequencies4
-
-   Input Data: Local:JWOODATA.MEPS_FULLYR_2012_SUBSET
-   Server:  Local
-   ------------------------------------------------------------------- */
-
-%_eg_conditional_dropds(WORK.SORT);
-/* -------------------------------------------------------------------
-   Sort data set Local:JWOODATA.MEPS_FULLYR_2012_SUBSET
-   ------------------------------------------------------------------- */
-
-PROC SQL;
-	CREATE VIEW WORK.SORT AS
-		SELECT T.MARRY12X
-	FROM JWOODATA.MEPS_FULLYR_2012_SUBSET as T
-;
-QUIT;
-
-TITLE;
-TITLE1 "One-Way Frequencies for MARRY12X";
-FOOTNOTE;
-FOOTNOTE1 "Generated by the SAS System (&_SASSERVERNAME, &SYSSCPL) on %TRIM(%QSYSFUNC(DATE(), NLDATE20.)) at %TRIM(%SYSFUNC(TIME(), TIMEAMPM12.)) by Julian Woo";
-PROC FREQ DATA=WORK.SORT
-	ORDER=INTERNAL
-;
-	TABLES MARRY12X /  SCORES=TABLE;
-RUN;
-/* -------------------------------------------------------------------
-   End of task code.
-   ------------------------------------------------------------------- */
-RUN; QUIT;
-%_eg_conditional_dropds(WORK.SORT);
-TITLE; FOOTNOTE;
-
-
-GOPTIONS NOACCESSIBLE;
-%LET _CLIENTTASKLABEL=;
-%LET _CLIENTPROJECTPATH=;
-%LET _CLIENTPROJECTNAME=;
-
-
-/*   START OF NODE: Missing Marry12x   */
-%LET _CLIENTTASKLABEL='Missing Marry12x';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
-
-GOPTIONS ACCESSIBLE;
-%_eg_conditional_dropds(WORK.MEPS_FULLYR_2012_MARRYRE);
-
-PROC SQL;
-   CREATE TABLE WORK."MEPS_FULLYR_2012_MARRYRE"n AS 
-   SELECT t1.DUPERSID, 
-          t1.AGE12X, 
-          t1.SEX, 
-          t1.REGION12, 
-          t1.RACETHX, 
-          t1.MARRY12X, 
-          t1.EDUYRDEG, 
-          t1.UNEMP12X, 
-          t1.UNEIMP12, 
-          t1.ADAPPT42, 
-          t1.ADCAPE42, 
-          t1.ADCLIM42, 
-          t1.ADCMPD42, 
-          t1.ADCMPM42, 
-          t1.ADCMPY42, 
-          t1.ADDAYA42, 
-          t1.ADDOWN42, 
-          t1.ADDPRS42, 
-          t1.ADDRBP42, 
-          t1.ADEFRT42, 
-          t1.ADEGMC42, 
-          t1.ADEXPL42, 
-          t1.ADEZUN42, 
-          t1.ADFFRM42, 
-          t1.ADFHLP42, 
-          t1.ADGENH42, 
-          t1.ADHECR42, 
-          t1.ADHOPE42, 
-          t1.ADILCR42, 
-          t1.ADILWW42, 
-          t1.ADINSA42, 
-          t1.ADINSB42, 
-          t1.ADINST42, 
-          t1.ADINTR42, 
-          t1.ADL3MO42, 
-          t1.ADLANG42, 
-          t1.ADLHLP42, 
-          t1.ADLIST42, 
-          t1.ADMALS42, 
-          t1.ADMWLM42, 
-          t1.ADNDCR42, 
-          t1.ADNERV42, 
-          t1.ADNRGY42, 
-          t1.ADNSMK42, 
-          t1.ADOVER42, 
-          t1.ADPAIN42, 
-          t1.ADPALS42, 
-          t1.ADPRTM42, 
-          t1.ADPRX42, 
-          t1.ADPWLM42, 
-          t1.ADRESP42, 
-          t1.ADREST42, 
-          t1.ADRISK42, 
-          t1.ADRTCR42, 
-          t1.ADRTWW42, 
-          t1.ADSAD42, 
-          t1.ADSMOK42, 
-          t1.ADSOCA42, 
-          t1.ADSPEC42, 
-          t1.ADSPRF42, 
-          t1.ADTLHW42, 
-          t1.ADUPRO42, 
-          t1.ADWRTH42, 
-          t1.PHQ242, 
-          t1.HPRAP12, 
-          t1.HPRAU12, 
-          t1.HPRDE12, 
-          t1.HPRFE12, 
-          t1.HPRJA12, 
-          t1.HPRJL12, 
-          t1.HPRJU12, 
-          t1.HPRMA12, 
-          t1.HPRMY12, 
-          t1.HPRNO12, 
-          t1.HPROC12, 
-          t1.HPRSE12, 
-          t1.MDDLPR42, 
-          t1.MDDLRS42, 
-          t1.MDUNAB42, 
-          t1.MDUNPR42, 
-          t1.MDUNRS42, 
-          t1.MDDLAY42, 
-          t1.DNUNAB42, 
-          t1.DNUNPR42, 
-          t1.DNUNRS42, 
-          t1.DNDLAY42, 
-          t1.DNDLPR42, 
-          t1.DNDLRS42, 
-          t1.RTHLTH31, 
-          t1.RTHLTH42, 
-          t1.RTHLTH53, 
-          t1.ARTHAGED, 
-          t1.ARTHDX, 
-          t1.ARTHTYPE, 
-          t1.ASTHAGED, 
-          t1.ASTHDX, 
-          t1.ADHDADDX, 
-          t1.ADHDAGED, 
-          t1.DSDIA53, 
-          t1.MIAGED, 
-          t1.MIDX, 
-          t1.HIBPAGED, 
-          t1.HIBPDX, 
-          t1.LEUKAGED, 
-          t1.LEUKREMS, 
-          t1.LUNGAGED, 
-          t1.LUNGREMS, 
-          t1.LYMPAGED, 
-          t1.LYMPREMS, 
-          t1.MELAAGED, 
-          t1.MELAREMS, 
-          t1.OTHRAGED, 
-          t1.OHRTAGED, 
-          t1.OHRTDX, 
-          t1.SKDKAGED, 
-          t1.SKDKREMS, 
-          t1.SKNMAGED, 
-          t1.STRKAGED, 
-          t1.STRKDX, 
-          t1.THRTAGED, 
-          t1.THRTREMS, 
-          t1.THYRAGED, 
-          t1.THYRREMS, 
-          t1.AIDHLP31, 
-          t1.AIDHLP53, 
-          t1.SSECP12X, 
-          t1.BUSIMP12, 
-          t1.BUSNP12X, 
-          t1.BRAIAGED, 
-          t1.BRAIREMS, 
-          t1.BRSTAGED, 
-          t1.BRSTEX53, 
-          t1.BRSTREMS, 
-          t1.CABLADDR, 
-          t1.CABRAIN, 
-          t1.CABREAST, 
-          t1.CACERVIX, 
-          t1.CACOLON, 
-          t1.CALEUKEM, 
-          t1.CALUNG, 
-          t1.CALYMPH, 
-          t1.CAMELANO, 
-          t1.CANCERDX, 
-          t1.CAOTHER, 
-          t1.CAPROSTA, 
-          t1.CARECO42, 
-          t1.CASHP12X, 
-          t1.CASKINDK, 
-          t1.CASKINNM, 
-          t1.CATHROAT, 
-          t1.CATHYROD, 
-          t1.CERVAGED, 
-          t1.CERVREMS, 
-          /* MARRY12X_RECODE */
-            (CASE 
-               WHEN -7 = t1.MARRY12X THEN .
-               WHEN -9 = t1.MARRY12X THEN .
-               ELSE t1.MARRY12X
-            END) LABEL="Whether married or not recode missing" AS MARRY12X_RECODE
-      FROM JWOODATA.MEPS_FULLYR_2012_SUBSET t1;
-QUIT;
-
-GOPTIONS NOACCESSIBLE;
-%LET _CLIENTTASKLABEL=;
-%LET _CLIENTPROJECTPATH=;
-%LET _CLIENTPROJECTNAME=;
-
-
-/*   START OF NODE: Marry12X_Recat   */
-%LET _CLIENTTASKLABEL='Marry12X_Recat';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
-
-GOPTIONS ACCESSIBLE;
-%put ERROR: Unable to get SAS code. Unable to open input data;
-
-
-GOPTIONS NOACCESSIBLE;
-
-
-%LET _CLIENTTASKLABEL=;
-%LET _CLIENTPROJECTPATH=;
-%LET _CLIENTPROJECTNAME=;
-
-
-/*   START OF NODE: Table Analysis2 for Marry12x   */
-%LET _CLIENTTASKLABEL='Table Analysis2 for Marry12x';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
-
-GOPTIONS ACCESSIBLE;
-/* -------------------------------------------------------------------
-   Code generated by SAS Task
-
-   Generated on: Monday, January 12, 2015 at 8:49:56 PM
-   By task: Table Analysis2 for Marry12x
-
-   Input Data: Local:WORK.MEPS_FULLYR_2012_MARRY_CAT_RE
-   Server:  Local
-   ------------------------------------------------------------------- */
-
-%_eg_conditional_dropds(WORK.SORTTempTableSorted);
-/* -------------------------------------------------------------------
-   Sort data set Local:WORK.MEPS_FULLYR_2012_MARRY_CAT_RE
-   ------------------------------------------------------------------- */
-
-PROC SQL;
-	CREATE VIEW WORK.SORTTempTableSorted AS
-		SELECT T.MARRY12X, T.MARRY12X_rec_cate
-	FROM WORK.MEPS_FULLYR_2012_MARRY_CAT_RE(FIRSTOBS=1 ) as T
-;
-QUIT;
-TITLE;
-TITLE1 "Table Analysis fo Marry12X";
-FOOTNOTE;
-FOOTNOTE1 "Generated by the SAS System (&_SASSERVERNAME, &SYSSCPL) on %TRIM(%QSYSFUNC(DATE(), NLDATE20.)) at %TRIM(%SYSFUNC(TIME(), TIMEAMPM12.)) By Julian Woo";
-PROC FREQ DATA = WORK.SORTTempTableSorted
-	ORDER=INTERNAL
-;
-	TABLES MARRY12X * MARRY12X_rec_cate /
-		NOROW
-		NOCOL
-		NOPERCENT
-		NOCUM
-		SCORES=TABLE
-		ALPHA=0.05;
-/* -------------------------------------------------------------------
-   End of task code.
-   ------------------------------------------------------------------- */
-RUN; QUIT;
-%_eg_conditional_dropds(WORK.SORTTempTableSorted);
-TITLE; FOOTNOTE;
-
-
-GOPTIONS NOACCESSIBLE;
-%LET _CLIENTTASKLABEL=;
-%LET _CLIENTPROJECTPATH=;
-%LET _CLIENTPROJECTNAME=;
-
-
-/*   START OF NODE: Marry12X_Recat1   */
-%LET _CLIENTTASKLABEL='Marry12X_Recat1';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
-
-GOPTIONS ACCESSIBLE;
-%put ERROR: Unable to get SAS code. Unable to open input data;
-
-
-GOPTIONS NOACCESSIBLE;
-
-
-%LET _CLIENTTASKLABEL=;
-%LET _CLIENTPROJECTPATH=;
-%LET _CLIENTPROJECTNAME=;
-
-
-/*   START OF NODE: Table Analysis3   */
-%LET _CLIENTTASKLABEL='Table Analysis3';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
-
-GOPTIONS ACCESSIBLE;
-/* -------------------------------------------------------------------
-   Code generated by SAS Task
-
-   Generated on: Monday, January 12, 2015 at 8:55:14 PM
-   By task: Table Analysis3
-
-   Input Data: Local:WORK.MEPS_FULLYR_2012_MARRY_CAT__0000
-   Server:  Local
-   ------------------------------------------------------------------- */
-
-%_eg_conditional_dropds(WORK.SORTTempTableSorted);
-/* -------------------------------------------------------------------
-   Sort data set Local:WORK.MEPS_FULLYR_2012_MARRY_CAT__0000
-   ------------------------------------------------------------------- */
-
-PROC SQL;
-	CREATE VIEW WORK.SORTTempTableSorted AS
-		SELECT T.MARRY12X, T.MARRY12X_rec_cate
-	FROM WORK.MEPS_FULLYR_2012_MARRY_CAT__0000 as T
-;
-QUIT;
-TITLE;
-TITLE1 "Table Analysis for MARRY12X";
-FOOTNOTE;
-FOOTNOTE1 "Generated by the SAS System (&_SASSERVERNAME, &SYSSCPL) on %TRIM(%QSYSFUNC(DATE(), NLDATE20.)) at %TRIM(%SYSFUNC(TIME(), TIMEAMPM12.)) by Julian Woo";
-PROC FREQ DATA = WORK.SORTTempTableSorted
-	ORDER=INTERNAL
-;
-	TABLES MARRY12X * MARRY12X_rec_cate /
-		NOROW
-		NOCOL
-		NOPERCENT
-		NOCUM
-		SCORES=TABLE
-		ALPHA=0.05;
-/* -------------------------------------------------------------------
-   End of task code.
-   ------------------------------------------------------------------- */
-RUN; QUIT;
-%_eg_conditional_dropds(WORK.SORTTempTableSorted);
-TITLE; FOOTNOTE;
-
-
-GOPTIONS NOACCESSIBLE;
-%LET _CLIENTTASKLABEL=;
-%LET _CLIENTPROJECTPATH=;
-%LET _CLIENTPROJECTNAME=;
-
-
-/*   START OF NODE: Query Builder   */
-%LET _CLIENTTASKLABEL='Query Builder';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
-
-GOPTIONS ACCESSIBLE;
-%_eg_conditional_dropds(WORK.QUERY_FOR_MEPS_FULLYR_2012__0000);
-
-PROC SQL;
-   CREATE TABLE WORK.QUERY_FOR_MEPS_FULLYR_2012__0000 AS 
-   SELECT t1.DUPERSID, 
-          t1.AGE12X, 
-          t1.SEX, 
-          t1.REGION12, 
-          t1.RACETHX, 
-          t1.MARRY12X, 
-          t1.EDUYRDEG, 
-          t1.UNEMP12X, 
-          t1.UNEIMP12, 
-          t1.ADAPPT42, 
-          t1.ADCAPE42, 
-          t1.ADCLIM42, 
-          t1.ADCMPD42, 
-          t1.ADCMPM42, 
-          t1.ADCMPY42, 
-          t1.ADDAYA42, 
-          t1.ADDOWN42, 
-          t1.ADDPRS42, 
-          t1.ADDRBP42, 
-          t1.ADEFRT42, 
-          t1.ADEGMC42, 
-          t1.ADEXPL42, 
-          t1.ADEZUN42, 
-          t1.ADFFRM42, 
-          t1.ADFHLP42, 
-          t1.ADGENH42, 
-          t1.ADHECR42, 
-          t1.ADHOPE42, 
-          t1.ADILCR42, 
-          t1.ADILWW42, 
-          t1.ADINSA42, 
-          t1.ADINSB42, 
-          t1.ADINST42, 
-          t1.ADINTR42, 
-          t1.ADL3MO42, 
-          t1.ADLANG42, 
-          t1.ADLHLP42, 
-          t1.ADLIST42, 
-          t1.ADMALS42, 
-          t1.ADMWLM42, 
-          t1.ADNDCR42, 
-          t1.ADNERV42, 
-          t1.ADNRGY42, 
-          t1.ADNSMK42, 
-          t1.ADOVER42, 
-          t1.ADPAIN42, 
-          t1.ADPALS42, 
-          t1.ADPRTM42, 
-          t1.ADPRX42, 
-          t1.ADPWLM42, 
-          t1.ADRESP42, 
-          t1.ADREST42, 
-          t1.ADRISK42, 
-          t1.ADRTCR42, 
-          t1.ADRTWW42, 
-          t1.ADSAD42, 
-          t1.ADSMOK42, 
-          t1.ADSOCA42, 
-          t1.ADSPEC42, 
-          t1.ADSPRF42, 
-          t1.ADTLHW42, 
-          t1.ADUPRO42, 
-          t1.ADWRTH42, 
-          t1.PHQ242, 
-          t1.HPRAP12, 
-          t1.HPRAU12, 
-          t1.HPRDE12, 
-          t1.HPRFE12, 
-          t1.HPRJA12, 
-          t1.HPRJL12, 
-          t1.HPRJU12, 
-          t1.HPRMA12, 
-          t1.HPRMY12, 
-          t1.HPRNO12, 
-          t1.HPROC12, 
-          t1.HPRSE12, 
-          t1.MDDLPR42, 
-          t1.MDDLRS42, 
-          t1.MDUNAB42, 
-          t1.MDUNPR42, 
-          t1.MDUNRS42, 
-          t1.MDDLAY42, 
-          t1.DNUNAB42, 
-          t1.DNUNPR42, 
-          t1.DNUNRS42, 
-          t1.DNDLAY42, 
-          t1.DNDLPR42, 
-          t1.DNDLRS42, 
-          t1.RTHLTH31, 
-          t1.RTHLTH42, 
-          t1.RTHLTH53, 
-          t1.ARTHAGED, 
-          t1.ARTHDX, 
-          t1.ARTHTYPE, 
-          t1.ASTHAGED, 
-          t1.ASTHDX, 
-          t1.ADHDADDX, 
-          t1.ADHDAGED, 
-          t1.DSDIA53, 
-          t1.MIAGED, 
-          t1.MIDX, 
-          t1.HIBPAGED, 
-          t1.HIBPDX, 
-          t1.LEUKAGED, 
-          t1.LEUKREMS, 
-          t1.LUNGAGED, 
-          t1.LUNGREMS, 
-          t1.LYMPAGED, 
-          t1.LYMPREMS, 
-          t1.MELAAGED, 
-          t1.MELAREMS, 
-          t1.OTHRAGED, 
-          t1.OHRTAGED, 
-          t1.OHRTDX, 
-          t1.SKDKAGED, 
-          t1.SKDKREMS, 
-          t1.SKNMAGED, 
-          t1.STRKAGED, 
-          t1.STRKDX, 
-          t1.THRTAGED, 
-          t1.THRTREMS, 
-          t1.THYRAGED, 
-          t1.THYRREMS, 
-          t1.AIDHLP31, 
-          t1.AIDHLP53, 
-          t1.SSECP12X, 
-          t1.BUSIMP12, 
-          t1.BUSNP12X, 
-          t1.BRAIAGED, 
-          t1.BRAIREMS, 
-          t1.BRSTAGED, 
-          t1.BRSTEX53, 
-          t1.BRSTREMS, 
-          t1.CABLADDR, 
-          t1.CABRAIN, 
-          t1.CABREAST, 
-          t1.CACERVIX, 
-          t1.CACOLON, 
-          t1.CALEUKEM, 
-          t1.CALUNG, 
-          t1.CALYMPH, 
-          t1.CAMELANO, 
-          t1.CANCERDX, 
-          t1.CAOTHER, 
-          t1.CAPROSTA, 
-          t1.CARECO42, 
-          t1.CASHP12X, 
-          t1.CASKINDK, 
-          t1.CASKINNM, 
-          t1.CATHROAT, 
-          t1.CATHYROD, 
-          t1.CERVAGED, 
-          t1.CERVREMS, 
-          t1.EDRECODE, 
-          /* EDURECODE_Missing */
-            (CASE 
-               WHEN -7 = t1.EDRECODE THEN .
-               WHEN -8 = t1.EDRECODE THEN .
-               WHEN -9 = t1.EDRECODE THEN .
-               ELSE t1.EDRECODE
-            END) LABEL="EDURECODE recode missing data" AS EDURECODE_Missing
-      FROM JWOODATA.MEPS_FULLYR_2012_SUBSET t1;
-QUIT;
-
-GOPTIONS NOACCESSIBLE;
-%LET _CLIENTTASKLABEL=;
-%LET _CLIENTPROJECTPATH=;
-%LET _CLIENTPROJECTNAME=;
-
-
-/*   START OF NODE: Education_cate   */
-%LET _CLIENTTASKLABEL='Education_cate';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
-
-GOPTIONS ACCESSIBLE;
-%put ERROR: Unable to get SAS code. Unable to open input data;
-
-
-GOPTIONS NOACCESSIBLE;
-
-
-%LET _CLIENTTASKLABEL=;
-%LET _CLIENTPROJECTPATH=;
-%LET _CLIENTPROJECTNAME=;
-
-
-/*   START OF NODE: Table Analysis2   */
-%LET _CLIENTTASKLABEL='Table Analysis2';
-%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011215.egp';
-%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011215.egp';
-
-GOPTIONS ACCESSIBLE;
-/* -------------------------------------------------------------------
-   Code generated by SAS Task
-
-   Generated on: Monday, January 12, 2015 at 8:45:43 PM
-   By task: Table Analysis2
-
-   Input Data: Local:WORK.MEPS_FULLYR_2012_CATEEDU
-   Server:  Local
-   ------------------------------------------------------------------- */
-
-%_eg_conditional_dropds(WORK.SORTTempTableSorted);
-/* -------------------------------------------------------------------
-   Sort data set Local:WORK.MEPS_FULLYR_2012_CATEEDU
-   ------------------------------------------------------------------- */
-
-PROC SQL;
-	CREATE VIEW WORK.SORTTempTableSorted AS
-		SELECT T.EDURECODE_Miss_cate, T.EDRECODE
-	FROM WORK.MEPS_FULLYR_2012_CATEEDU as T
-;
-QUIT;
-TITLE;
-TITLE1 "Table Analysis for EDURECODE";
-FOOTNOTE;
-FOOTNOTE1 "Generated by the SAS System (&_SASSERVERNAME, &SYSSCPL) on %TRIM(%QSYSFUNC(DATE(), NLDATE20.)) at %TRIM(%SYSFUNC(TIME(), TIMEAMPM12.)) by Julian Woo";
-PROC FREQ DATA = WORK.SORTTempTableSorted
-	ORDER=INTERNAL
-;
-	TABLES EDRECODE * EDURECODE_Miss_cate /
+	TABLES COUNT_of_DUPERSID * NUM_ER_cate /
 		NOROW
 		NOCOL
 		NOPERCENT
@@ -2775,6 +5297,181 @@ GOPTIONS NOACCESSIBLE;
 %LET _CLIENTTASKLABEL=;
 %LET _CLIENTPROJECTPATH=;
 %LET _CLIENTPROJECTNAME=;
+
+
+/*   START OF NODE: Program   */
+%LET _CLIENTTASKLABEL='Program';
+%LET _CLIENTPROJECTPATH='P:\QAC\qac200\students\jwoo\WooJ_SAS_project_011315.egp';
+%LET _CLIENTPROJECTNAME='WooJ_SAS_project_011315.egp';
+%LET _SASPROGRAMFILE=;
+
+GOPTIONS ACCESSIBLE;
+PROC SQL;
+   CREATE TABLE JWOODATA.MEPS_FULLYR_2012_SUBSET(label="MEPS_FULLYR_2012_SUBSET") AS 
+   SELECT t1.DUPERSID, 
+          t1.AGE12X, 
+          t1.SEX, 
+          t1.REGION12, 
+          t1.RACETHX, 
+          t1.MARRY12X, 
+          t1.EDUYRDEG, 
+          t1.UNEMP12X, 
+          t1.UNEIMP12, 
+          t1.ADAPPT42, 
+          t1.ADCAPE42, 
+          t1.ADCLIM42, 
+          t1.ADCMPD42, 
+          t1.ADCMPM42, 
+          t1.ADCMPY42, 
+          t1.ADDAYA42, 
+          t1.ADDOWN42, 
+          t1.ADDPRS42, 
+          t1.ADDRBP42, 
+          t1.ADEFRT42, 
+          t1.ADEGMC42, 
+          t1.ADEXPL42, 
+          t1.ADEZUN42, 
+          t1.ADFFRM42, 
+          t1.ADFHLP42, 
+          t1.ADGENH42, 
+          t1.ADHECR42, 
+          t1.ADHOPE42, 
+          t1.ADILCR42, 
+          t1.ADILWW42, 
+          t1.ADINSA42, 
+          t1.ADINSB42, 
+          t1.ADINST42, 
+          t1.ADINTR42, 
+          t1.ADL3MO42, 
+          t1.ADLANG42, 
+          t1.ADLHLP42, 
+          t1.ADLIST42, 
+          t1.ADMALS42, 
+          t1.ADMWLM42, 
+          t1.ADNDCR42, 
+          t1.ADNERV42, 
+          t1.ADNRGY42, 
+          t1.ADNSMK42, 
+          t1.ADOVER42, 
+          t1.ADPAIN42, 
+          t1.ADPALS42, 
+          t1.ADPRTM42, 
+          t1.ADPRX42, 
+          t1.ADPWLM42, 
+          t1.ADRESP42, 
+          t1.ADREST42, 
+          t1.ADRISK42, 
+          t1.ADRTCR42, 
+          t1.ADRTWW42, 
+          t1.ADSAD42, 
+          t1.ADSMOK42, 
+          t1.ADSOCA42, 
+          t1.ADSPEC42, 
+          t1.ADSPRF42, 
+          t1.ADTLHW42, 
+          t1.ADUPRO42, 
+          t1.ADWRTH42, 
+          t1.PHQ242, 
+          t1.HPRAP12, 
+          t1.HPRAU12, 
+          t1.HPRDE12, 
+          t1.HPRFE12, 
+          t1.HPRJA12, 
+          t1.HPRJL12, 
+          t1.HPRJU12, 
+          t1.HPRMA12, 
+          t1.HPRMY12, 
+          t1.HPRNO12, 
+          t1.HPROC12, 
+          t1.HPRSE12, 
+          t1.MDDLPR42, 
+          t1.MDDLRS42, 
+          t1.MDUNAB42, 
+          t1.MDUNPR42, 
+          t1.MDUNRS42, 
+          t1.MDDLAY42, 
+          t1.DNUNAB42, 
+          t1.DNUNPR42, 
+          t1.DNUNRS42, 
+          t1.DNDLAY42, 
+          t1.DNDLPR42, 
+          t1.DNDLRS42, 
+          t1.RTHLTH31, 
+          t1.RTHLTH42, 
+          t1.RTHLTH53, 
+          t1.ARTHAGED, 
+          t1.ARTHDX, 
+          t1.ARTHTYPE, 
+          t1.ASTHAGED, 
+          t1.ASTHDX, 
+          t1.ADHDADDX, 
+          t1.ADHDAGED, 
+          t1.DSDIA53, 
+          t1.MIAGED, 
+          t1.MIDX, 
+          t1.HIBPAGED, 
+          t1.HIBPDX, 
+          t1.LEUKAGED, 
+          t1.LEUKREMS, 
+          t1.LUNGAGED, 
+          t1.LUNGREMS, 
+          t1.LYMPAGED, 
+          t1.LYMPREMS, 
+          t1.MELAAGED, 
+          t1.MELAREMS, 
+          t1.OTHRAGED, 
+          t1.OHRTAGED, 
+          t1.OHRTDX, 
+          t1.SKDKAGED, 
+          t1.SKDKREMS, 
+          t1.SKNMAGED, 
+          t1.STRKAGED, 
+          t1.STRKDX, 
+          t1.THRTAGED, 
+          t1.THRTREMS, 
+          t1.THYRAGED, 
+          t1.THYRREMS, 
+          t1.AIDHLP31, 
+          t1.AIDHLP53, 
+          t1.SSECP12X, 
+          t1.BUSIMP12, 
+          t1.BUSNP12X, 
+          t1.BRAIAGED, 
+          t1.BRAIREMS, 
+          t1.BRSTAGED, 
+          t1.BRSTEX53, 
+          t1.BRSTREMS, 
+          t1.CABLADDR, 
+          t1.CABRAIN, 
+          t1.CABREAST, 
+          t1.CACERVIX, 
+          t1.CACOLON, 
+          t1.CALEUKEM, 
+          t1.CALUNG, 
+          t1.CALYMPH, 
+          t1.CAMELANO, 
+          t1.CANCERDX, 
+          t1.CAOTHER, 
+          t1.CAPROSTA, 
+          t1.CARECO42, 
+          t1.CASHP12X, 
+          t1.CASKINDK, 
+          t1.CASKINNM, 
+          t1.CATHROAT, 
+          t1.CATHYROD, 
+          t1.CERVAGED, 
+          t1.CERVREMS, 
+          t1.EDRECODE
+      FROM EC100005.meps_fullyr_2012 t1
+      WHERE t1.AGE12X >= 18
+      ORDER BY t1.DUPERSID;
+QUIT;
+
+GOPTIONS NOACCESSIBLE;
+%LET _CLIENTTASKLABEL=;
+%LET _CLIENTPROJECTPATH=;
+%LET _CLIENTPROJECTNAME=;
+%LET _SASPROGRAMFILE=;
 
 ;*';*";*/;quit;run;
 ODS _ALL_ CLOSE;
